@@ -1,0 +1,4 @@
+.virtualenv
+*.sw[a-z]
+*.pyc
+db
