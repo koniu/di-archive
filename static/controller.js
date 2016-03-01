@@ -7,6 +7,9 @@ $(document).ready(function() {
     $('#player').remove()
     // return buttons to 'play' icon
     $('.playbtn').html('&nbsp;<i class="fa fa-play"></i>&nbsp;')
+    // unset background and clear the global
+    background = false
+    bg_unset()
   }
 
   function toggle_play(e) {
@@ -35,18 +38,26 @@ $(document).ready(function() {
       $(this).html('&nbsp;<i class="fa fa-stop"></i>&nbsp;')
       // set audio to hide and die if ended or problems
       $('audio').on('error abort ended', kill_audio)
+      // set background global to the show's thumbnail
+      background = $(this).closest('tr').find('img').attr('src')
+      bg_set(background)
     }
   }
 
+  background = false
   function bg_set(image) {
     var img = $('#background img')
     img.attr('src', image)
     img.stop(true).fadeTo(2000, 0.3)
+    return image
   }
 
   function bg_unset() {
     var img = $('#background img')
-    img.stop(true).fadeOut(1000)
+    // fadeout background and return tho the played one
+    img.stop(true).fadeOut(1000, function() {
+      if (background) { bg_set(background) }
+    })
   }
 
   // show play-buttons and bind click event
@@ -54,9 +65,10 @@ $(document).ready(function() {
   $('.playbtn').click(toggle_play)
 
   // use thumbnail as page background when hovering over show
+  // unless a persistent one is set
   $('.showlink').hover(
-    function() { bg_set($(this).closest('tr').find('img').attr('src')) },
-    bg_unset
+    function() { if (!background) { bg_set($(this).closest('tr').find('img').attr('src')) } },
+    function() { if (!background) { bg_unset() } }
   )
 
   // popovers with show blurb when hovering over show
@@ -66,6 +78,7 @@ $(document).ready(function() {
       e.data('title', '');
       var ident = $(e).attr('href').split('/').reverse()[0]
       var url = '/showinfo/'+ident
+      //console.log(ident, url)
       $.get(url, function(r) {
         var title = $(r).find('#title').text
         e.popover('destroy').popover({ html : true, trigger : 'hover', content: r, container: 'body'})
