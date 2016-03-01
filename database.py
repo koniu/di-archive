@@ -52,3 +52,6 @@ def create_tables():
         Audio,
     ])
     db.close()
+
+if __name__ == "__main__":
+    create_tables()
