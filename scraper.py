@@ -164,7 +164,6 @@ class Show(CachedObject):
                 int(parts[0])*(60*60) +
                 int(parts[1])*60 +
                 int(parts[2])) for parts in chapters])
-        print chapters
         return chapters
 #}}}
 
