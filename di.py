@@ -1,12 +1,22 @@
 #!/usr/bin/env python
 from bottle import *
 from database import *
+import shlex
+import operator
 
 @route('/tags')
 @view('tags')
 def tag_view():
     db.connect()
-    tags = Tag.select()
+    # select all tags, count how many shows they have and sort by that
+    count = fn.COUNT(ShowTag.id)
+    tags = (
+        Tag.select(Tag, count.alias('count'))
+        .join(ShowTag)
+        .join(Show)
+        .group_by(Tag)
+        .order_by(count.desc(), Tag.name)
+    )
     db.close()
     return  {'tags': tags}
 
@@ -46,23 +56,31 @@ def index():
 @view('index')
 def search(query):
     db.connect()
-    shows = Show.select() #FIXME: actually implement a lookup
-    terms = query.split(' ')
-    results = []
-    for show in shows:
-        hit = True
-        for term in terms:
-            scope = " ".join([t.name for t in show.tags])
-            if term.startswith('tag:'):
-                term = term.replace('tag:', '')
-            else:
-                scope += show.blurb
+    # split the user input
+    terms = shlex.split(query)
 
-            if term.lower() not in scope.lower():
-                hit = False
-                break
-        if hit:
-            results.append(show)
+    # build expressions
+    expressions = []
+    for term in terms:
+        if term.startswith('tag:'):
+            term = term.replace('tag:', '')
+            expr = Tag.name.contains(term)
+        else:
+            expr = (Show.blurb.contains(term) | Show.title.contains(term))
+        expressions.append(expr)
+
+    # join the expressions
+    sql_query = reduce(operator.and_, expressions)
+
+    # execute query
+    results = (Show.select()
+        .join(ShowTag)
+        .join(Tag)
+        .where(sql_query)
+        .group_by(Show)
+    )
+
+    # close db connection and return
     db.close()
     return {'shows': results, 'query': query}
 
