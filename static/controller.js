@@ -73,8 +73,8 @@ $(document).ready(function() {
       var chapters = $(this).attr('data-chapters')
       if (chapters) {
         $('audio').data.chapters = [for (t of ('0,'+chapters).split(',')) parseInt(t)]
-        var backbtn = $('<button class="btn btn-default skipbtn" id="back"><i class="fa fa-backward"></i></button>')
-        var fwdbtn = $('<button class="btn btn-default skipbtn" id="fwd"><i class="fa fa-forward"></i></button>')
+        var backbtn = $('<button class="btn btn-default skipbtn" id="back"><i class="fa fa-step-backward"></i></button>')
+        var fwdbtn = $('<button class="btn btn-default skipbtn" id="fwd"><i class="fa fa-step-forward"></i></button>')
         var btns = backbtn.add(fwdbtn)
         btns.prependTo($(this).parent())
         btns.wrapAll('<div class="btn-group skipbtn" role="group"></div>')
