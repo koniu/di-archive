@@ -16,12 +16,12 @@
     <br>
     <form method="get" action="/search" class="form-inline">
       <div class="input-group">
-        <input name="s" type="text" value="{{query}}" class="form-control input-sm" placeholder="Search..." />
+        <input name="s" type="text" value="{{query}}" class="form-control" placeholder="Search..." />
         <span class="input-group-btn">
-          <button class="btn btn-default btn-sm" title="Search" type="Submit">&nbsp;<i class="fa fa-search"></i>&nbsp;</button>
+          <button class="btn btn-default" title="Search" type="Submit">&nbsp;<i class="fa fa-search"></i>&nbsp;</button>
         </span>
       </div>
-        <a href="/tags" class="btn btn-default btn-sm" title="Tag browser">
+        <a href="/tags" class="btn btn-default" title="Tag browser">
             &nbsp;<i class="fa fa-tags"></i>&nbsp;
         </a>
     </form>
@@ -46,14 +46,12 @@
       <td><img src="{{show.thumb}}" height="48" width="48"></td>
       <td><a class="showlink player-target" href="/show/{{show.ident}}">{{show.title}}</a></td>
       <td class="listbuttons text-right">
-        <a class="btn btn-default btn-sm playbtn" data-chapters="{{show.chapters}}">&nbsp;<i class="fa fa-play"></i>&nbsp;</a>
-        <a href="{{show.orig_url}}" class="btn btn-default btn-sm">WWW</a>
+        <button title="Play" class="btn btn-default playbtn"
+        data-chapters="{{show.chapters}}"><i class="fa fa-play"></i></button>
+        <a href="{{show.orig_url}}" title="View on D*I website" class="btn btn-default"><i class="fa fa-globe"></i></a>
         % if show.audio:
           <div class="dropdown">
-            <a class="btn btn-default btn-sm dropdown-toggle" tabindex="0">
-              Download
-              <span class="caret"></span>
-            </a>
+            <a title="Downloads" class="btn btn-default dropdown-toggle" tabindex="0"><i class="fa fa-download"></i><span class="caret"></span></a>
             <ul class="dropdown-menu pull-right">
               % for dl in show.audio:
                 <li>

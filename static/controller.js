@@ -6,7 +6,7 @@ $(document).ready(function() {
     // remove player
     $('#player').remove()
     // return buttons to 'play' icon
-    $('.playbtn').html('&nbsp;<i class="fa fa-play"></i>&nbsp;')
+    $('.playbtn').html('<i class="fa fa-play"></i>')
     // remove skip btns
     $('.skipbtn').remove()
     // unset background and clear the global
@@ -63,7 +63,7 @@ $(document).ready(function() {
       // start audio
       $('audio').trigger("play");
       // change button icon to 'stop'
-      $(this).html('&nbsp;<i class="fa fa-stop"></i>&nbsp;')
+      $(this).html('<i class="fa fa-stop"></i>')
       // set audio to hide and die if ended or problems
       $('audio').on('error abort ended', kill_audio)
       // set background global to the show's thumbnail
@@ -73,8 +73,8 @@ $(document).ready(function() {
       var chapters = $(this).attr('data-chapters')
       if (chapters) {
         $('audio').data.chapters = [for (t of ('0,'+chapters).split(',')) parseInt(t)]
-        var backbtn = $('<button class="btn btn-default skipbtn" id="back"><i class="fa fa-step-backward"></i></button>')
-        var fwdbtn = $('<button class="btn btn-default skipbtn" id="fwd"><i class="fa fa-step-forward"></i></button>')
+        var backbtn = $('<button title="Previous piece" class="btn btn-default skipbtn"><i class="fa fa-step-backward"></i></button>')
+        var fwdbtn = $('<button title="Next piece" class="btn btn-default skipbtn"><i class="fa fa-step-forward"></i></button>')
         var btns = backbtn.add(fwdbtn)
         btns.prependTo($(this).parent())
         btns.wrapAll('<div class="btn-group skipbtn" role="group"></div>')
