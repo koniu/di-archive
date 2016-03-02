@@ -8,11 +8,9 @@ displaying them in a readable, searchable format.
 Chief dependencies are Python 2.x with the following libs:
 
 * peewee
-* beautifulsoup
 * bottle
-* requests
-* dateutil
 * internetarchive
+* dateutil
 
 See requirements.txt for details.
 

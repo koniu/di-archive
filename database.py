@@ -34,15 +34,6 @@ class Audio(Model):
     class Meta:
         database = db
 
-# class ShowTag(Model):
-#     tag = ForeignKeyField(Tag)
-#     show = ForeignKeyField(Show)
-
-#     class Meta:
-#         database = db
-
-
-
 def create_tables():
     db.connect()
     db.create_tables([
