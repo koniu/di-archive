@@ -27,7 +27,7 @@ def show_view(ident):
     try:
        show = Show.get(ident = ident)
     except:
-        pass #FIXME: we want to handle this as 404
+        abort(404)
     db.close()
     return  {'show': show}
 
@@ -92,5 +92,11 @@ def search_redir():
 @route('/static/:path#.+#')
 def server_static(path):
     return static_file(path, root='./static')
+
+@error(404)
+@route('/404')
+@view('error404')
+def error404(error):
+    return { 'error': error, 'request': request }
 
 run(host='', port=8010, debug=True, reloader=True)
