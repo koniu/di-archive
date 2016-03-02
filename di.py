@@ -20,9 +20,7 @@ def tag_view():
     db.close()
     return  {'tags': tags}
 
-@route('/show/<ident>')
-@view('show')
-def show_view(ident):
+def show(ident):
     db.connect()
     try:
        show = Show.get(ident = ident)
@@ -31,17 +29,15 @@ def show_view(ident):
     db.close()
     return  {'show': show}
 
+@route('/show/<ident>')
+@view('show')
+def show_view(ident):
+    return show(ident)
+
 @route('/showinfo/<ident>')
 @view('popup')
-def popup(ident): #FIXME: reuse the above
-    db.connect()
-    try:
-       show = Show.get(ident = ident)
-    except:
-        pass #FIXME: we want to handle this as 404
-    db.close()
-    return  {'show': show}
-
+def popup(ident):
+    return show(ident)
 
 @route('/')
 @route('/search/')
