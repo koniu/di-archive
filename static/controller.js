@@ -7,9 +7,37 @@ $(document).ready(function() {
     $('#player').remove()
     // return buttons to 'play' icon
     $('.playbtn').html('&nbsp;<i class="fa fa-play"></i>&nbsp;')
+    // remove skip btns
+    $('.skipbtn').remove()
     // unset background and clear the global
     background = false
     bg_unset()
+  }
+
+  function audio_fwd() {
+    var a = $('audio')
+    var current = parseInt(a.prop('currentTime'))
+    var chapters = a.data.chapters
+    for (i = 0; i < chapters.length; i++) {
+      var marker = chapters[i]
+      if (marker > current) {
+        a.prop('currentTime', marker)
+        break
+      }
+    }
+  }
+
+  function audio_back() {
+    var a = $('audio')
+    var current = parseInt(a.prop('currentTime'))
+    var chapters = a.data.chapters
+    for (i = chapters.length; i >= 0; i--) {
+      var marker = chapters[i]
+      if (marker < current) {
+        a.prop('currentTime', marker)
+        break
+      }
+    }
   }
 
   function toggle_play(e) {
@@ -41,6 +69,18 @@ $(document).ready(function() {
       // set background global to the show's thumbnail
       background = $(this).closest('tr').find('img').attr('src')
       bg_set(background)
+      // chapter support #FIXME: well messy
+      var chapters = $(this).attr('data-chapters')
+      if (chapters) {
+        $('audio').data.chapters = [for (t of ('0,'+chapters).split(',')) parseInt(t)]
+        var backbtn = $('<button class="btn btn-default skipbtn" id="back"><i class="fa fa-backward"></i></button>')
+        var fwdbtn = $('<button class="btn btn-default skipbtn" id="fwd"><i class="fa fa-forward"></i></button>')
+        var btns = backbtn.add(fwdbtn)
+        btns.prependTo($(this).parent())
+        btns.wrapAll('<div class="btn-group skipbtn" role="group"></div>')
+        backbtn.click(audio_back)
+        fwdbtn.click(audio_fwd)
+      }
     }
   }
 
@@ -78,7 +118,6 @@ $(document).ready(function() {
       e.data('title', '');
       var ident = $(e).attr('href').split('/').reverse()[0]
       var url = '/showinfo/'+ident
-      //console.log(ident, url)
       $.get(url, function(r) {
         var title = $(r).find('#title').text
         e.popover('destroy').popover({ html : true, trigger : 'hover', content: r, container: 'body'})

@@ -23,6 +23,7 @@ class Show(BaseModel):
     ident = CharField(null = True) #FIXME: we don't want null really
     orig_url = CharField()
     tags = ManyToManyField(Tag, related_name='shows')
+    chapters = CharField(null = True)
 
 ShowTag = Show.tags.get_through_model()
 

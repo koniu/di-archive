@@ -72,6 +72,7 @@ class Show(CachedObject):
         self.ia_url = self.get_ia_url()
         self.ia_dir = self.get_ia_dir()
         self.tags = self.get_tags()
+        self.chapters = self.get_chapters()
 
     def _cache_cb(self, ident):
         return internetarchive.Item(self.ident)
@@ -154,6 +155,17 @@ class Show(CachedObject):
         except:
             return None
 
+    def get_chapters(self):
+        regex = re.compile(r'..:..:..')
+        chapters = regex.findall(self.blurb)
+        chapters = [re.split(':', t) for t in chapters]
+        chapters = ",".join([
+                str(
+                int(parts[0])*(60*60) +
+                int(parts[1])*60 +
+                int(parts[2])) for parts in chapters])
+        print chapters
+        return chapters
 #}}}
 
 if __name__ == "__main__":
@@ -181,13 +193,12 @@ if __name__ == "__main__":
                     ia_url = s.ia_url,
                     ia_dir = s.ia_dir,
                     ident = s.ident,
-                    orig_url = s.orig_url
+                    orig_url = s.orig_url,
+                    chapters = s.chapters
                 )
 
                 # create Audio records
                 for a in s.audio:
-                    # a == (f.format, f.url, f.size, f.name)
-                    # FIXME: fuck these positional[2] args[1]
                     audio, created = database.Audio.get_or_create(
                         show = show,
                         url = a.url,

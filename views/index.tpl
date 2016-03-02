@@ -46,7 +46,7 @@
       <td><img src="{{show.thumb}}" height="48" width="48"></td>
       <td><a class="showlink player-target" href="/show/{{show.ident}}">{{show.title}}</a></td>
       <td class="listbuttons text-right">
-        <a class="btn btn-default btn-sm playbtn">&nbsp;<i class="fa fa-play"></i>&nbsp;</a>
+        <a class="btn btn-default btn-sm playbtn" data-chapters="{{show.chapters}}">&nbsp;<i class="fa fa-play"></i>&nbsp;</a>
         <a href="{{show.orig_url}}" class="btn btn-default btn-sm">WWW</a>
         % if show.audio:
           <div class="dropdown">
