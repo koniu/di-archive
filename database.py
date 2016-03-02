@@ -5,12 +5,15 @@ db_file = 'db/di.db'
 db = SqliteDatabase(db_file)
 
 
-class Tag(Model):
-    name = CharField()
+class BaseModel(Model):
     class Meta:
         database = db
 
-class Show(Model):
+
+class Tag(BaseModel):
+    name = CharField()
+
+class Show(BaseModel):
     title = CharField()
     image = CharField(null = True)
     thumb = CharField()
@@ -20,19 +23,15 @@ class Show(Model):
     ident = CharField(null = True) #FIXME: we don't want null really
     orig_url = CharField()
     tags = ManyToManyField(Tag, related_name='shows')
-    class Meta:
-        database = db
 
 ShowTag = Show.tags.get_through_model()
 
-class Audio(Model):
+class Audio(BaseModel):
     url = CharField()
     format = CharField()
     size = IntegerField()
     name = CharField()
     show = ForeignKeyField(Show, related_name='audio')
-    class Meta:
-        database = db
 
 def create_tables():
     db.connect()
