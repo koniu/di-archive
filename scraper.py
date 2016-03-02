@@ -83,8 +83,7 @@ class Show(CachedObject):
         return "https://archive.org/download/%s" % self.ident
 
     def get_audio_urls(self):
-        files = self.ia.get_files(formats=['Ogg Vorbis', 'VBR MP3'])
-        return [(f.format, f.url, f.size, f.name) for f in files]
+        return self.ia.get_files(formats=['Ogg Vorbis', 'VBR MP3'])
 
     def get_blurb(self):
         try:
@@ -191,10 +190,10 @@ if __name__ == "__main__":
                     # FIXME: fuck these positional[2] args[1]
                     audio, created = database.Audio.get_or_create(
                         show = show,
-                        url = a[1],
-                        format = a[0],
-                        name = a[3],
-                        size = a[2]
+                        url = a.url,
+                        format = a.format,
+                        name = a.name,
+                        size = a.size
                     )
 
                 # create Tag records
