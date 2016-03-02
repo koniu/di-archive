@@ -168,39 +168,40 @@ if __name__ == "__main__":
         shows.append(show)
 
     print "Populating the database..."
-    for s in shows:
-        try:
-            show = database.Show.get(ident = s.ident)
-        except database.Show.DoesNotExist:
-            # create a Show record
-            show = database.Show.create(
-                title = s.title,
-                image = s.image,
-                thumb = s.thumb,
-                blurb = s.blurb,
-                ia_url = s.ia_url,
-                ia_dir = s.ia_dir,
-                ident = s.ident,
-                orig_url = s.orig_url
-            )
-
-            # create Audio records
-            for a in s.audio:
-                # a == (f.format, f.url, f.size, f.name)
-                # FIXME: fuck these positional[2] args[1]
-                audio, created = database.Audio.get_or_create(
-                    show = show,
-                    url = a[1],
-                    format = a[0],
-                    name = a[3],
-                    size = a[2]
+    with database.db.atomic():
+        for s in shows:
+            try:
+                show = database.Show.get(title = s.title)
+            except database.Show.DoesNotExist:
+                # create a Show record
+                show = database.Show.create(
+                    title = s.title,
+                    image = s.image,
+                    thumb = s.thumb,
+                    blurb = s.blurb,
+                    ia_url = s.ia_url,
+                    ia_dir = s.ia_dir,
+                    ident = s.ident,
+                    orig_url = s.orig_url
                 )
 
-            # create Tag records
-            for t in s.tags:
-                tag, created = database.Tag.get_or_create(name = t)
-                try:
-                    show.tags.add(tag)
-                except:
-                    # needed when duplicate tags are assigned to a show
-                    pass
+                # create Audio records
+                for a in s.audio:
+                    # a == (f.format, f.url, f.size, f.name)
+                    # FIXME: fuck these positional[2] args[1]
+                    audio, created = database.Audio.get_or_create(
+                        show = show,
+                        url = a[1],
+                        format = a[0],
+                        name = a[3],
+                        size = a[2]
+                    )
+
+                # create Tag records
+                for t in s.tags:
+                    tag, created = database.Tag.get_or_create(name = t)
+                    try:
+                        show.tags.add(tag)
+                    except:
+                        # needed when duplicate tags are assigned to a show
+                        pass
