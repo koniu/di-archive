@@ -1,15 +1,6 @@
 %include header.tpl title=""
 
-<div class="row">
-  <div class="col-md-10">
-    <h3><a href="..">Dissident Island Radio Archive</a> / Tags</h3>
-  </div>
-  <div class="col-md-2 text-right">
-  <a href="http://dissidentisland.org" target="_blank">
-    <img src="/static/boombox.png" title="Dissident Island website"/>
-  </a>
-  </div>
-</div>
+%include navbar query="tag:"
 
 <hr>
 <div class="row">

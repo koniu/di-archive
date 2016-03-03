@@ -4,36 +4,14 @@
   %include header.tpl title=""
 %end
 
-<!-- headline -->
-<div class="row">
-  <div class="col-md-7">
-    <a href="http://dissidentisland.org" target="_blank">
-      <img class="pull-left" style="padding-right: 1em" src="/static/boombox.png" title="Dissident Island website"/>
-    </a>
-    <h3>Dissident Island Radio Archive</h3>
-  </div>
-  <div class="col-md-5 text-right no-float">
-    <br>
-    <form method="get" action="/search" class="form-inline">
-      <div class="input-group">
-        <input name="s" type="text" value="{{query}}" class="form-control" placeholder="Search..." />
-        <span class="input-group-btn">
-          <button class="btn btn-default" title="Search" type="Submit">&nbsp;<i class="fa fa-search"></i>&nbsp;</button>
-        </span>
-      </div>
-        <a href="/tags" class="btn btn-default" title="Tag browser">
-            &nbsp;<i class="fa fa-tags"></i>&nbsp;
-        </a>
-    </form>
-  </div>
-</div>
-<br>
+%include navbar
 
+<br>
+<br>
 <!-- search results -->
-% if query:
-  Found {{len(shows)}} results for <b>{{query}}</b> <a class="small"
-  href="/">(show all)</a>
-% end
+%if query:
+  Found {{len(shows)}} results for <b>{{query}}</b> <a class="small" href="/">(show all)</a>
+%end
 <br>
 <br>
 
@@ -71,6 +49,5 @@
   </table>
 </div>
 </div>
-
 
 %include footer

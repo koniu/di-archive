@@ -1,18 +1,14 @@
 %include header.tpl title=" / " + show.title
 
+%include navbar query=""
   <div class="row">
-    <div class="col-md-10">
-      <h3><a href="..">Dissident Island Radio Archive</a> / {{show.title}}</h3>
-    </div>
-    <div class="col-md-2 text-right">
-    <a href="http://dissidentisland.org" target="_blank">
-      <img src="/static/boombox.png" title="Dissident Island website"/>
-    </a>
+    <div class="col-md-12">
+      <h4>{{show.title}}</h4>
     </div>
   </div>
+  <hr>
 
   <div class="row">
-
     <div class="col-md-4">
       <img src="{{show.image}}" class="img-responsive">
       <br>
@@ -33,7 +29,6 @@
 
     <div class="col-md-2">
     <ul class="nav nav-pills nav-stacked text-center">
-      <br><br>
       <b>Links</b>
       <br><br>
         <li><a href="{{show.orig_url}}" class="btn btn-default btn-sm">View on D*I website</a></li>
