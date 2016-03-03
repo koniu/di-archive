@@ -222,7 +222,7 @@ $(document).ready(function() {
       // kbd btn
       kbdbtn_add = function(t) {
         var div = $(t).closest('.audioctl')
-        if (!div.children('.kbdbtn').length){
+        if (!div.children('.kbdbtn').length && div.children().length > 1) {
           var kbdbtn = $('<button title="Enable keyboard controls" class="btn btn-default kbdbtn"><i class="fa fa-keyboard-o"></i></button>')
           kbdbtn.prependTo(div)
           kbdbtn.click(function() {
