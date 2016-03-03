@@ -3,7 +3,7 @@
     <div class="media">
       <div class="media-left">
       <a href="/">
-        <img class="pull-left" style="padding-right: 1em" src="/static/boombox.png" title="Dissident Island website"/>
+        <img class="pull-left" style="padding-right: 1em" src="/static/boombox.png" title=".."/>
       </a>
       </div>
       <div class="media-body">
