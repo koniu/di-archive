@@ -62,7 +62,7 @@ def search(query):
             term = term.replace('tag:', '')
             expr = Tag.name.contains(term)
         else:
-            expr = (Show.blurb.contains(term) | Show.title.contains(term))
+            expr = TextField.concat(Show.blurb, Show.title).contains(term)
         expressions.append(expr)
 
     # join the expressions
