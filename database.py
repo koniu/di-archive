@@ -34,6 +34,9 @@ class Audio(BaseModel):
     name = CharField()
     show = ForeignKeyField(Show, related_name='audio')
 
+    class Meta:
+        order_by = ['format', 'name']
+
 def create_tables():
     db.connect()
     db.create_tables([
