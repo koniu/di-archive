@@ -86,7 +86,7 @@ div.tags {
 
 /* on big screen leave space for the player */
 @media screen and (min-width: 992px) {
-  td.listbuttons { min-width: 30em }
+  td.listbuttons { min-width: 33em }
 }
 
 input[type="range"] {

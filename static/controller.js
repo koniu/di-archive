@@ -24,6 +24,7 @@ $(document).ready(function() {
     $('.pausebtn').remove()
     $('.seekdiv').remove()
     $('.backfwd').remove()
+    $('.kbdbtn').remove()
     // kill green highlight
     $('.audiobtn').removeClass('btn-success')
     // unset background and clear the global
@@ -218,6 +219,19 @@ $(document).ready(function() {
       a.on('canplaythrough', audio_time);
       a.on('timeupdate', audio_time);
 
+      // kbd btn
+      kbdbtn_add = function(t) {
+        var div = $(t).closest('.audioctl')
+        if (!div.children('.kbdbtn').length){
+          var kbdbtn = $('<button title="Enable keyboard controls" class="btn btn-default kbdbtn"><i class="fa fa-keyboard-o"></i></button>')
+          kbdbtn.prependTo(div)
+          kbdbtn.click(function() {
+            $('#seek').focus()
+          })
+        }
+      }
+      kbdbtn_add(this)
+
       // kbd controls
       $('.audiobtn').keydown(function(event){
         var a = $('audio')[0]
@@ -253,9 +267,14 @@ $(document).ready(function() {
         }
       })
 
-      $('.audiobtn').focus(function() {$(this).parent().parent().find('.audiobtn').addClass('btn-success') })
-      $('.audiobtn').blur(function() {$(this).parent().parent().find('.audiobtn').removeClass('btn-success') })
-      $('#seek').focus()
+      $('.audiobtn').focus(function() {
+        $(this).parent().parent().find('.audiobtn').addClass('btn-success')
+        $('.kbdbtn').remove()
+      })
+      $('.audiobtn').blur(function() {
+        $(this).parent().parent().find('.audiobtn').removeClass('btn-success')
+        kbdbtn_add(this)
+      })
     }
   }
 
