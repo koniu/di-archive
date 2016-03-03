@@ -49,7 +49,8 @@ $(document).ready(function() {
     if (isthisstopped) {
       // find target placement for the player
       var row = $(this).closest('tr')
-      var target = row.find('.showlink').parent()
+      //var target = row.find('.showlink').parent()
+      var target = $(this).closest('td')
       // insert div for the player
       var playerdiv = $('<div id="player"></div>').appendTo(target);
       // insert audio into the div

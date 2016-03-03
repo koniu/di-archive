@@ -6,7 +6,6 @@
       <h4>{{show.title}}</h4>
     </div>
   </div>
-  <hr>
 
   <div class="row">
     <div class="col-md-4">

@@ -6,8 +6,6 @@
 
 %include navbar
 
-<br>
-<br>
 <!-- search results -->
 %if query:
   Found {{len(shows)}} results for <b>{{query}}</b> <a class="small" href="/">(show all)</a>
