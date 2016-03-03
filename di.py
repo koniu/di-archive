@@ -85,6 +85,10 @@ def search_redir():
     query = request.query.s
     redirect("/search/%s" % query)
 
+@route('/favicon.ico')
+def favicon():
+    return static_file('favicon.ico', root='./static')
+
 @route('/static/:path#.+#')
 def server_static(path):
     return static_file(path, root='./static')
