@@ -33,7 +33,7 @@ $(document).ready(function() {
     var chapters = a.data.chapters
     for (i = chapters.length; i >= 0; i--) {
       var marker = chapters[i]
-      if (marker < current) {
+      if (marker < current - 2 ) {
         a.prop('currentTime', marker)
         break
       }
