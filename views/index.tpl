@@ -16,31 +16,38 @@
 <!-- list of shows -->
 <div class="row">
 <div class="col-md-12">
-  <table class="table table-condensed">
+  <table class="table table-condensed table-responsive">
   % for show in shows:
     <tr>
-      <td><img src="{{show.thumb}}" height="48" width="48"></td>
-      <td><a class="showlink player-target" href="/show/{{show.ident}}">{{show.title}}</a></td>
+      <td style="width: 60">
+        <img src="{{show.thumb}}" height="48" width="48">
+      </td>
+      <td>
+        <a class="showlink player-target" href="/show/{{show.ident}}">{{show.title}}</a>
+      </td>
       <td class="listbuttons text-right">
-        <button title="Play" class="btn btn-default playbtn"
-        data-chapters="{{show.chapters}}"><i class="fa fa-play"></i></button>
-        <a href="{{show.orig_url}}" title="View on D*I website" class="btn btn-default"><i class="fa fa-globe"></i></a>
-        % if show.audio:
-          <div class="dropdown">
-            <a title="Downloads" class="btn btn-default dropdown-toggle" tabindex="0"><i class="fa fa-download"></i><span class="caret"></span></a>
-            <ul class="dropdown-menu pull-right">
-              % for dl in show.audio:
-                <li>
-                  <a class="audiolink" href="{{dl.url}}">
-                    <span>{{dl.format}}</span>
-                    <small class="text-muted">{{dl.size/(1024*1024)}}MB</small><br/>
-                    <small class="text-info">{{dl.name}}</small>
-                  </a>
-                </li>
-              % end
-            </ul>
-          </div>
-        %end
+        <div class="btn-group audioctl">
+          <button title="Play" class="btn btn-default playbtn audiobtn" data-chapters="{{show.chapters}}"><i class="fa fa-play"></i></button>
+        </div>
+        <div class="btn-group">
+          <a href="{{show.orig_url}}" title="View on D*I website" class="btn btn-default"><i class="fa fa-globe"></i></a>
+          % if show.audio:
+            <div class="dropdown input-group-btn">
+              <a title="Downloads" class="btn btn-default dropdown-toggle" tabindex="0"><i class="fa fa-download"></i><span class="caret"></span></a>
+              <ul class="dropdown-menu pull-right">
+                % for dl in show.audio:
+                  <li>
+                    <a class="audiolink" href="{{dl.url}}">
+                      <span>{{dl.format}}</span>
+                      <small class="text-muted">{{dl.size/(1024*1024)}}MB</small><br/>
+                      <small class="text-info">{{dl.name}}</small>
+                    </a>
+                  </li>
+                % end
+              </ul>
+            </div>
+          %end
+        </div>
       </td>
     </tr>
   % end
