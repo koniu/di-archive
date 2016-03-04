@@ -139,7 +139,7 @@ class Show(CachedObject):
         if thumbs:
             thumb_url = thumbs[0].url
             thumb_path = self.download_thumb(thumb_url)
-            return thumb_path
+            return "/%s" % thumb_path
         else:
             return "/static/dot.png"
 
