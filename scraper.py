@@ -2,12 +2,13 @@
 
 from dateutil import parser as date_parser
 from xml.etree import cElementTree as ET
-import os.path
+import os.path, os
 import urllib
 import re
 import shelve
 import internetarchive
 import peewee
+import requests
 
 import database
 
@@ -136,9 +137,26 @@ class Show(CachedObject):
     def get_thumb(self):
         thumbs = self.ia.get_files(formats=['JPEG Thumb'])
         if thumbs:
-            return thumbs[0].url
+            thumb_url = thumbs[0].url
+            thumb_path = self.download_thumb(thumb_url)
+            return thumb_path
         else:
             return "/static/dot.png"
+
+    def download_thumb(self, url):
+        thumb_dir = 'static/thumbs'
+        thumb_path = "%s/%s.jpg" % (thumb_dir, self.ident)
+        if not os.path.exists(thumb_path):
+            r = requests.get(url, stream=True)
+            if r.status_code == 200:
+                try:
+                    os.mkdir(thumb_dir)
+                except:
+                    pass
+                with open(thumb_path, 'wb') as f:
+                    for chunk in r:
+                        f.write(chunk)
+        return thumb_path
 
     def get_image(self):
         # try get img from archive.org
