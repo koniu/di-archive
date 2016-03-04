@@ -219,21 +219,33 @@ $(document).ready(function() {
       a.on('canplaythrough', audio_time);
       a.on('timeupdate', audio_time);
 
-      // kbd btn
-      kbdbtn_add = function(t) {
+      // kbd controls
+      kbd_ctl = false
+      function kbdctl_on(e) {
+        kbd_ctl = true
+        $(e.target).parent().parent().find('.audiobtn').addClass('btn-success')
+        $('.kbdbtn').remove()
+        $('#seek').focus()
+      }
+      function kbdctl_off(t) {
+        kbd_ctl = false
+        $(e.target).parent().parent().find('.audiobtn').removeClass('btn-success')
+        kbdbtn_add(e.target)
+      }
+      function kbdbtn_add(t) {
         var div = $(t).closest('.audioctl')
         if (!div.children('.kbdbtn').length && div.children().length > 1) {
           var kbdbtn = $('<button title="Enable keyboard controls" class="btn btn-default kbdbtn"><i class="fa fa-keyboard-o"></i></button>')
           kbdbtn.prependTo(div)
-          kbdbtn.click(function() {
-            $('#seek').focus()
-          })
+          kbdbtn.click(kbdctl_on)
         }
       }
       kbdbtn_add(this)
 
+
       // kbd controls
       $('.audiobtn').keydown(function(event){
+        if (!kbd_ctl) { return true }
         var a = $('audio')[0]
         switch(event.keyCode) {
           case 27:
@@ -266,15 +278,8 @@ $(document).ready(function() {
             audio_fwd(); return false
         }
       })
+      $('.audiobtn').blur(kbdctl_off)
 
-      $('.audiobtn').focus(function() {
-        $(this).parent().parent().find('.audiobtn').addClass('btn-success')
-        $('.kbdbtn').remove()
-      })
-      $('.audiobtn').blur(function() {
-        $(this).parent().parent().find('.audiobtn').removeClass('btn-success')
-        kbdbtn_add(this)
-      })
     }
   }
 
