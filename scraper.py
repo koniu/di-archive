@@ -74,6 +74,7 @@ class Show(CachedObject):
         self.ia_dir = self.get_ia_dir()
         self.tags = self.get_tags()
         self.chapters = self.get_chapters()
+        self.waveforms = self.get_waveforms()
 
     def _cache_cb(self, ident):
         return internetarchive.Item(self.ident)
@@ -86,6 +87,10 @@ class Show(CachedObject):
 
     def get_audio_urls(self):
         return self.ia.get_files(formats=['Ogg Vorbis', 'VBR MP3'])
+
+    def get_waveforms(self):
+        pngs = self.ia.get_files(formats=['PNG'])
+        return [f for f in pngs if f.source == 'derivative']
 
     def get_blurb(self):
         try:
@@ -216,12 +221,19 @@ if __name__ == "__main__":
 
                 # create Audio records
                 for a in s.audio:
+                    waveform = None
+                    for w in s.waveforms:
+                        if os.path.splitext(w.original)[0] ==
+                            os.path.splitext(a.name)[0]:
+                            waveform = w.url
+                            break
                     audio, created = database.Audio.get_or_create(
                         show = show,
                         url = a.url,
                         format = a.format,
                         name = a.name,
-                        size = a.size
+                        size = a.size,
+                        waveform = waveform
                     )
 
                 # create Tag records

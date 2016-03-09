@@ -37,7 +37,7 @@
               <ul class="dropdown-menu pull-right">
                 % for dl in show.audio:
                   <li>
-                    <a class="audiolink" href="{{dl.url}}">
+                    <a class="audiolink" href="{{dl.url}}" data-waveform="{{dl.waveform}}">
                       <span>{{dl.format}}</span>
                       <small class="text-muted">{{dl.size/(1024*1024)}}MB</small><br/>
                       <small class="text-info">{{dl.name}}</small>

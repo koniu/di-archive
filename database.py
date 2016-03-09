@@ -32,6 +32,7 @@ class Audio(BaseModel):
     format = CharField()
     size = IntegerField()
     name = CharField()
+    waveform = CharField(null=True)
     show = ForeignKeyField(Show, related_name='audio')
 
     class Meta:
