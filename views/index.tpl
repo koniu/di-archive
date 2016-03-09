@@ -1,10 +1,9 @@
 %if query:
-  %include header.tpl title=" / "+query
+  %include _header title=" / "+query
 %else:
-  %include header.tpl title=""
+  %include _header title=""
 %end
-
-%include navbar
+%include _navbar
 
 <!-- search results -->
 %if query:
@@ -55,4 +54,4 @@
 </div>
 </div>
 
-%include footer
+%include _footer

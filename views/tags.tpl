@@ -1,6 +1,5 @@
-%include header.tpl title=""
-
-%include navbar query="tag:"
+%include _header title=""
+%include _navbar query="tag:"
 
 <hr>
 <div class="row">
@@ -20,4 +19,4 @@
   </div>
 </div>
 
-%include footer
+%include _footer

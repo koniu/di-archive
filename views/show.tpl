@@ -1,6 +1,6 @@
-%include header.tpl title=" / " + show.title
+%include _header title=" / " + show.title
+%include _navbar query=""
 
-%include navbar query=""
   <div class="row">
     <div class="col-md-12">
       <h4>{{show.title}}</h4>
@@ -62,4 +62,4 @@
   </div>
 
 
-%include footer
+%include _footer
