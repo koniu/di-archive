@@ -223,8 +223,7 @@ if __name__ == "__main__":
                 for a in s.audio:
                     waveform = None
                     for w in s.waveforms:
-                        if os.path.splitext(w.original)[0] ==
-                            os.path.splitext(a.name)[0]:
+                        if os.path.splitext(w.original)[0] == os.path.splitext(a.name)[0]:
                             waveform = w.url
                             break
                     audio, created = database.Audio.get_or_create(
