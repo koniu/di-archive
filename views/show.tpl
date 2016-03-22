@@ -1,15 +1,18 @@
-%include _header title=" / " + show.title
+%include _header js="show.js", title=" / " + show.title
 %include _navbar query=""
 
   <div class="row">
     <div class="col-md-12">
       <h4>{{show.title}}</h4>
+      <br>
     </div>
   </div>
 
   <div class="row">
     <div class="col-md-4">
       <img src="{{show.image}}" class="img-responsive">
+      <br>
+      <div id="player" data-chapters="{{show.chapters}}"></div>
       <br>
     </div>
     <div class="col-md-6">

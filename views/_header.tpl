@@ -10,7 +10,7 @@
   <script src="/static/tooltip.js" type="text/javascript"></script>
   <script src="/static/popover.js" type="text/javascript"></script>
   <script src="/static/audio-player.js" type="text/javascript"></script>
-  <script src="/static/controller.js" type="text/javascript"></script>
+  <script src="/static/{{js}}" type="text/javascript"></script>
   <title>Dissident Island Radio Archive{{title}}</title>
 </head>
 <body>

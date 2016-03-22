@@ -1,7 +1,7 @@
 %if query:
-  %include _header title=" / "+query
+  %include _header js="index.js", title=" / "+query
 %else:
-  %include _header title=""
+  %include _header js="index.js", title=""
 %end
 %include _navbar
 

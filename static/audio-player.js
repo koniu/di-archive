@@ -19,7 +19,7 @@
         sources: [],
         controls: [ 'kbd', 'seekbar', 'cue_prev', 'cue_next', 'toggle', 'kill' ],
         btn_class: 'btn btn-default',
-        seek_class: 'btn btn-default disabled hidden-sm hidden-xs',
+        seek_class: 'btn btn-default disabled',
         kbd_help: {
           toggle: '\n\nkey: Space',
           cue_next: '\n\nkey: ]',
