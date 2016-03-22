@@ -179,7 +179,7 @@ class Show(CachedObject):
             return None
 
     def get_chapters(self):
-        regex = re.compile(r'..:..:..')
+        regex = re.compile(r'\d+:\d+:\d+')
         chapters = regex.findall(self.blurb)
         chapters = [re.split(':', t) for t in chapters]
         chapters = ",".join([
