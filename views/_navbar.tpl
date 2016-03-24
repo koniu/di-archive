@@ -1,5 +1,5 @@
 <div class="row" id="#navbar">
-  <div class="col-md-7">
+  <div class="col-md-9">
     <div class="media">
       <div class="media-left">
       <a href="/">
@@ -17,9 +17,9 @@
     </div>
   </div>
 
-  <div class="col-md-5 text-right no-float">
+  <div class="col-md-3">
     <br>
-    <form method="get" action="/search" class="form-inline">
+    <form method="get" action="/search">
       <div class="input-group">
         <input name="s" type="text" value="{{query}}" class="form-control" placeholder="Search..." />
         <span class="input-group-btn">
