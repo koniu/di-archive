@@ -1,5 +1,5 @@
-%include _header js="show.js", title=" / " + show.title
-%include _navbar query=""
+% include('_header', js='show.js', title=' / ' + show.title)
+% include('_navbar', query='')
 
   <div class="row">
     <div class="col-md-12">
@@ -65,4 +65,4 @@
   </div>
 
 
-%include _footer
+% include('_footer')

@@ -1,9 +1,9 @@
 %if query:
-  %include _header js="index.js", title=" / "+query
+  % include('_header', js='index.js', title=' / '+query)
 %else:
-  %include _header js="index.js", title=""
+  % include('_header', js='index.js', title='')
 %end
-%include _navbar
+% include('_navbar')
 
 <!-- search results -->
 %if query:
@@ -17,10 +17,10 @@
 <div class="col-md-12">
   <table class="table table-condensed table-responsive">
   % for show in shows:
-    % include _index-item show=show
+    % include('_index-item', show=show)
   % end
   </table>
 </div>
 </div>
 
-%include _footer
+% include('_footer')

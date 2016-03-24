@@ -1,5 +1,5 @@
-%include _header title=""
-%include _navbar query="tag:"
+% include('_header', title='')
+% include('_navbar', query='tag:')
 
 <hr>
 <div class="row">
@@ -19,4 +19,4 @@
   </div>
 </div>
 
-%include _footer
+% include('_footer')

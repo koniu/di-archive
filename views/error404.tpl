@@ -1,4 +1,4 @@
-%include _header title="404"
+% include('_header', title='404')
 
 <div class="text-center">
     <br>
@@ -7,4 +7,4 @@
     Kindly <a href="/">go back</a> and check out the shows.
 </div>
 
-%include _footer
+% include('_footer')
