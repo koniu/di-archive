@@ -44,11 +44,58 @@ div.tags {
 }
 .archivetaglink { opacity: 0; }
 
+/* navbar*/
+
+#navbar {
+  background: rgba(220,220,220,0.7);
+  border-bottom: dashed 10px rgba(220,220,220,0.7);
+  border-left: dashed 10px rgba(220,220,220,0.7);
+  border-right: dashed 10px rgba(220,220,220,0.7);
+  padding: 1em;
+  background-clip: padding-box;
+  background-clip: padding-box;
+  margin-bottom: 1em;
+  background-clip: padding-box;
+  margin-top: -1.5em;
+}
+
+@media screen and (max-width: 772px) {
+  #navbar { border-right: 0; border-left: 0;}
+}
+
+#navbar .input-group {
+  border-top: dashed 3px rgba(255,255,255,0.7);
+  border-bottom: dashed 3px rgba(255,255,255,0.7);
+}
+#navbar .input-group input,
+#navbar .input-group button
+{
+  background: rgba(255,255,255,0.7);
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none;
+  color: #777;
+  padding: 7px 12px;
+  margin: 0px;
+}
+#navbar .input-group button:hover {  color: black; }
+
+#navbar h3 {
+  font-size: 16pt;
+  font-family: courier,monospace;
+  font-weight: bold;
+  margin-top: 4px !important;
+  margin-bottom: 5px;
+}
+#navbar h3 > a {
+  color: #333;
+  text-decoration: none;
+}
+#navbar form { padding-top: 0.7em; }
+
 /* main nav links are green and courier */
 #nav-links a { margin-right: 1em; font-family: courier; color: #444 }
-#nav-links a:hover { color: green; text-decoration: none }
-
-/* helper class */
+#nav-links a:hover { text-decoration: none; background: rgba(255,255,255,0.7); }
 
 /* on big screen leave space for the player */
 @media screen and (min-width: 992px) {
