@@ -22,6 +22,7 @@ a.dropdown-toggle:focus + .dropdown-menu {
 }
 
 /* fading background thumbnail */
+body {  min-height: 100%; }
 #background {
   z-index: -1000;
   position: fixed;
@@ -30,6 +31,7 @@ a.dropdown-toggle:focus + .dropdown-menu {
 }
 #background img {
   width: 100%;
+  min-height: 100%;
   opacity: 0;
 }
 
