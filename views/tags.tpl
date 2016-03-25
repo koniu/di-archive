@@ -1,7 +1,7 @@
 % include('_header', title='')
 % include('_navbar', query='tag:')
 
-<hr>
+<br>
 <div class="row">
   <div class="col-md-12">
     <div class="tags">

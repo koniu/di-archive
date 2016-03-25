@@ -45,6 +45,7 @@ div.tags {
   opacity: 1;
 }
 .archivetaglink { opacity: 0; }
+.tag { color: #ccc}
 
 /* navbar*/
 
