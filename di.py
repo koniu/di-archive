@@ -4,9 +4,12 @@ from database import *
 import shlex
 import operator
 
+CACHE_TIMEOUT = 86400 # 1d
+
 @route('/tags')
 @view('tags')
 def tag_view():
+    response.set_header("Cache-Control", "public, max-age=%d" % CACHE_TIMEOUT)
     db.connect()
     # select all tags, count how many shows they have and sort by that
     count = fn.COUNT(ShowTag.id)
@@ -21,6 +24,7 @@ def tag_view():
     return  {'tags': tags}
 
 def show(ident):
+    response.set_header("Cache-Control", "public, max-age=%d" % CACHE_TIMEOUT)
     db.connect()
     try:
        show = Show.get(ident = ident)
@@ -43,6 +47,7 @@ def popup(ident):
 @route('/search/')
 @view('index')
 def index():
+    response.set_header("Cache-Control", "public, max-age=%d" % CACHE_TIMEOUT)
     db.connect()
     shows = Show.select()
     db.close()
