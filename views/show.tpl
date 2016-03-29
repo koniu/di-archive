@@ -16,7 +16,7 @@
       <dl>
         <dd>
         <div id="player"></div><br>
-        <span class="prewrap small">{{show.blurb}}</span>
+        <span class="prewrap small">{{!show.blurb}}</span>
         </dd>
         <dd><br>
             %for t in show.tags:

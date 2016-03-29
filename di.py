@@ -6,6 +6,25 @@ import operator
 
 CACHE_TIMEOUT = 86400 # 1d
 
+def linkify(text):
+    subs = [
+        # canonical url
+        ( re.compile(r"(^|[\n ])(([\w]+?://[\w\#$%&~.\-;:=,?@\[\]+]*)(/[\w\#$%&~/.\-;:=,?@\[\]+]*)?)", re.IGNORECASE | re.DOTALL),
+            r'\1<a href="\2" target="_blank">\2</a>' ),
+        # url without protocol
+        ( re.compile(r"(^|[\n ])(((www|ftp)\.[\w\#$%&~.\-;:=,?@\[\]+]*)(/[\w\#$%&~/.\-;:=,?@\[\]+]*)?)", re.IGNORECASE | re.DOTALL),
+            r'\1<a href="http://\2" target="_blank">\2</a>' ),
+        # twitter hashtag
+        ( re.compile(r'(\A|\s)@(\w+)'),
+            r'\1@<a href="http://www.twitter.com/\2" target="_blank">\2</a>' ),
+        # twitter username
+        ( re.compile(r'(\A|\s)#(\w+)'),
+            r'\1#<a href="http://search.twitter.com/search?q=%23\2" target="_blank">\2</a>' ),
+    ]
+    for p, s in subs:
+        text = p.sub(s, text)
+    return text
+
 @route('/tags')
 @view('tags')
 def tag_view():
@@ -31,6 +50,7 @@ def show(ident):
     except:
         abort(404)
     db.close()
+    show.blurb = linkify(show.blurb)
     return  {'show': show}
 
 @route('/show/<ident>')
