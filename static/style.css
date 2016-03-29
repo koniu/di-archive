@@ -19,14 +19,20 @@ a.dropdown-toggle:focus + .dropdown-menu {
   display: block;
   visibility: hidden;
   transition: visibility 0.5s;
+  /* FIXME: hacks to not overflow our flex container */
+  min-width: 400px;
+  overflow: hidden;
 }
+
+.dropdown-menu * { font-size: 9pt !important; }
 
 /* fading background thumbnail */
 body {  min-height: 100%; }
 #background {
   z-index: -1000;
   position: fixed;
-  height: 100%;
+  overflow: hidden;
+  bottom: 0; top: 0;
   width: 100%;
 }
 #background img {
@@ -57,7 +63,7 @@ div.tags {
   padding: 1em;
   background-clip: padding-box;
   background-clip: padding-box;
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
   background-clip: padding-box;
   margin-top: -1.5em;
 }
@@ -100,9 +106,38 @@ div.tags {
 #nav-links a { margin-right: 1em; font-family: courier; color: #444 }
 #nav-links a:hover { text-decoration: none; background: rgba(255,255,255,0.7); }
 
-/* reserve space for buttons */
-td.listbuttons { min-width: 10em }
-/* on big screen leave space for the player */
-@media screen and (min-width: 992px) {
-  td.listbuttons { min-width: 33em }
+
+/* list items */
+
+.item {
+  display: flex;
+  padding: 5px;
+  border-top: 1px solid #ddd;
+}
+.item > * {
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.item .main { width: 100%; }
+.item .thumb { padding-right: 1em; }
+
+.item button,
+.item .ctls a {
+  color: #333;
+  font-size: 13pt;
+  width: 48px;
+  margin: -1px;
+  background: none;
+  border: 0px solid #aaa;
+}
+.item .ctls > *:focus,
+.item .ctls > *:hover,
+.item .ctls > *:active {
+  color: #aaa;
+}
+
+@media screen and (max-width: 992px) {
+  .item button { width: 30px }
 }

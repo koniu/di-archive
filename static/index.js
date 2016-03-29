@@ -2,10 +2,12 @@ $(document).ready(function() {
 
   function player_kill() {
     // remove player div
-    $('.player').parent().remove()
+    $('.kplayer').remove()
+    $('.main').removeData('audioPlayer')
 
     // restore play buttons
     $('.audiobtn').show()
+    $('.showlink').show()
 
     // unset background
     background = false
@@ -17,38 +19,47 @@ $(document).ready(function() {
     player_kill()
 
     // get sources
-    var sources = []
-    var waveforms = []
-    $(this).closest('tr').find('.audiolink').each(function(l,e) {
-      var waveform = e.getAttribute('data-waveform')
-      sources.push(e.href)
-      waveforms.push(waveform)
+    var sourcesh = {}
+    $(this).closest('.item').find('.audiolink').each(function(l,e) {
+      var ident = e.href.split('/').reverse()[0].split('.')[0]
+      if (sourcesh[ident]) {
+        sourcesh[ident].urls.push(e.href)
+      } else {
+        var src = {}
+        src.waveform = e.getAttribute('data-waveform')
+        src.urls = [ e.href ]
+        var cue_string = e.getAttribute('data-cues')
+        if (cue_string) { src.cues = ('0,'+cue_string).split(',').map(function(c) { return parseInt(c) }) } else { src.cues = [] } //FIXME: pretty hacky getting cues undefined otherwise
+      sourcesh[ident] = src
+      }
     })
-
-    // get cues
-    var cues = []
-    var cue_string= $(this).attr('data-chapters')
-    if (cue_string) {
-      cues = ('0,'+cue_string).split(',').map(function(c) { return parseInt(c) })
-    }
+    // turn dict into array
+    var sources = []
+    $.each(sourcesh, function(id,s) {
+      s.ident = id
+      sources.push(s)
+    })
 
     // hide our button
     $(this).hide()
 
     // initialize player
-    var player = $('<div>').audioPlayer({
+    var row = $(this).closest('.item')
+    var target = $(row.children('.main').get())
+    var showlink = $(row.find('.showlink'))
+    player = target.audioPlayer({
       sources: sources,
-      cues: cues
+      title: showlink.html(),
+      url: showlink.attr('href')
     })
-
-    // insert player
-    $(this).parent().prepend(player)
-
+    showlink.hide()
+    // show popover for the in-plauer title
+    $('.kplayer .title a').hover(pop)
     // clean up on kill
     player.on('killed', player_kill)
 
     // set background global to the show's thumbnail
-    background = $(this).closest('tr').find('img').attr('src')
+    background = $(this).closest('.item').find('img').attr('src')
     bg_set(background)
 
     // trigger play
@@ -82,12 +93,12 @@ $(document).ready(function() {
   // use thumbnail as page background when hovering over show
   // unless a persistent one is set
   $('.showlink').hover(
-    function() { if (!background) { bg_set($(this).closest('tr').find('img').attr('src')) } },
+    function() { if (!background) { bg_set($(this).closest('.item').find('img').attr('src')) } },
     function() { if (!background) { bg_unset() } }
   )
 
   // popovers with show blurb when hovering over show
-  $('body').on('mouseover', '.showlink', function() {
+  function pop() {
     var e = $(this);
     if (e.data('title') == undefined) {
       e.data('title', '');
@@ -99,6 +110,7 @@ $(document).ready(function() {
         if (e.is(':hover')) { e.popover('show') }
       })
     }
-  })
+  }
+  $('body').on('mouseover', '.showlink', pop)
 
 })

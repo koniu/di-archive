@@ -2,26 +2,23 @@
 % include('_navbar', query='')
 
   <div class="row">
-    <div class="col-md-12">
-      <h4>{{show.title}}</h4>
+    <div class="col-md-12 text-center">
+      <h3>{{show.title}}</h3>
       <br>
     </div>
   </div>
 
   <div class="row">
     <div class="col-md-4">
-      <img src="{{show.image}}" class="img-responsive">
-      <br>
-      <div id="player" data-chapters="{{show.chapters}}"></div>
-      <br>
+      <img src="{{show.image}}" style="width: 100% !important"><br><br>
     </div>
     <div class="col-md-6">
       <dl>
         <dd>
+        <div id="player"></div><br>
         <span class="prewrap small">{{show.blurb}}</span>
-        </dd><br>
-        <dt>Tags</dt>
-        <dd>
+        </dd>
+        <dd><br>
             %for t in show.tags:
               <a class="small text-info" href="../search/tag:{{t.name}}">{{t.name}}</a>
             %end
@@ -31,12 +28,6 @@
 
     <div class="col-md-2">
     <ul class="nav nav-pills nav-stacked text-center">
-      <b>Links</b>
-      <br><br>
-        <li><a href="{{show.orig_url}}" class="btn btn-default btn-sm">View on D*I website</a></li>
-        <li><a href="{{show.ia_url}}" class="btn btn-default btn-sm">View on archive.org</a></li>
-        <li><a href="{{show.ia_dir}}" class="btn btn-default btn-sm">Files on archive.org</a></li>
-      <br><br>
       <b>Download</b>
       <br><br>
       <li role="presentation">
@@ -49,7 +40,9 @@
           <ul class="dropdown-menu pull-right">
             % for dl in show.audio:
               <li>
-                <a class="audiolink" href="{{dl.url}}">
+                <a class="audiolink" href="{{dl.url}}"
+                    data-waveform="{{dl.waveform}}"
+                    data-cues="{{show.chapters}}">
                   <span>{{dl.format}}</span>
                   <small class="text-muted">{{dl.size/(1024*1024)}}MB</small><br/>
                   <small class="text-info">{{dl.name}}</small>
@@ -60,6 +53,12 @@
         </li>
         %end
       </li>
+      <br>
+      <b>Links</b>
+      <br><br>
+        <li><a href="{{show.orig_url}}" class="btn btn-default btn-sm">View on D*I website</a></li>
+        <li><a href="{{show.ia_url}}" class="btn btn-default btn-sm">View on archive.org</a></li>
+        <li><a href="{{show.ia_dir}}" class="btn btn-default btn-sm">Files on archive.org</a></li>
     </ul>
     </div>
   </div>

@@ -15,78 +15,35 @@
   $.audioPlayer = function(element, options) {
       //{{{ settings
       var defaults = {
-        background: false,
+        html: '<div class="kplayer"><div class="seekbar"><div class="waveform"></div><input class="slider" type="range"></input><div class="time">...</div><div class="title"></div><div class="track"></div></div><div class="buttons"><button class="kbd_toggle"><i class="fa fa-keyboard-o"></i></button><button class="prev"><i class="fa fa-step-backward"></i></button><button class="next"><i class="fa fa-step-forward"></i></button><button class="toggle"><i class="fa fa-play"></i></button><button class="kill"><i class="fa fa-stop"></i></button></div></div>',
         sources: [],
-        controls: [ 'kbd', 'seekbar', 'cue_prev', 'cue_next', 'toggle', 'kill' ],
-        btn_class: 'btn btn-default',
-        seek_class: 'btn btn-default disabled',
-        kbd_help: {
-          toggle: '\n\nkey: Space',
-          cue_next: '\n\nkey: ]',
-          cue_prev: '\n\nkey: [',
-          kill: '\n\nkey: Delete',
-          seekbar: '\n\n1s\t\tCtrl+Left/Right\n5s\t\tLeft/Right\n15s\t\tUp/Down\n5m\t\tPageUp/Down\n',
-          kbd: '\n\nHover over controls to see keyboard shortcuts'
+        controls: {
+          toggle: { title: 'Play/Pause',      keys: '⌨ Space'     },
+          next:   { title: 'Next piece',      keys: '⌨ ]'         },
+          prev:   { title: 'Previous piece',  keys: '⌨ ['         },
+          kill:   { title: 'Stop',            keys: '⌨ Delete'    },
+          slider: {
+            title: 'Seek',
+            keys: '⧗\t\t⌨\n±1s\t\tCtrl+Left/Right\n±5s\t\tLeft/Right\n±15s\tUp/Down\n±5m\tPageUp/Down\n'
+          },
+          kbd_toggle: {
+            title: 'Toggle keyboard controls',
+            keys: '⌨ Escape\n\nHover over controls to see keyboard shortcuts'
+          }
         },
         bar_colors: {
           buffered: '#ebebeb',
           played:   '#c8c8c8',
-          cue:      '#d8d8d8',
+          cue:      '#aaa',
           normal:   '#ffffff'
         }
       }
-      var player = this
+      var player = this // FIXME: make local again
+      player._target = element
       //}}}
       //{{{ private methods
-      //{{{ button
-      var button = function(action, icon, title) {
-        var btn = $('<button />')
-        btn.attr({
-          title: title,
-          class: 'btn-player-control'
-        })
-        btn.addClass(player.settings.btn_class)
-        btn.data({title: btn.attr('title')})
-        btn.html('<i class="fa fa-'+icon+'"></i>')
-        btn.click(action)
-        return btn
-      }
-      //}}}
-      //{{{ seekbar
-      var seekbar = function() {
-        // div wrapper
-        player.seekbar = $('<div />')
-        player.seekbar.attr({
-          title: 'Seek',
-          class: 'seekbar'
-        })
-        player.seekbar.addClass(player.settings.seek_class)
-        player.seekbar.data({title: player.seekbar.attr('title')})
-        // background
-        if (player.settings.background) {
-          player.seekbar_bg = $('<div class="seekbar_bg" />')
-          player.seekbar_bg.css('background', 'rgb(224,224,224) url("'+player.settings.background+'")')
-        }
-        // slider
-        player.slider = $('<input />')
-        player.slider.attr({
-          type: 'range',
-          min: 0,
-          value: 0,
-          step: 1
-        })
-        player.slider.on('input', slider_seek)
-        // time
-        player.time = $('<div class="time" /></div>')
-        // assemble div and return
-        player.seekbar.append(player.seekbar_bg, player.slider, player.time)
-
-
-        return player.seekbar
-      }
-      //}}}
-      //{{{ time_update
-      var time_update = function() {
+      //{{{ update_time
+      var update_time = function() {
         player.time.html(
           '<small>' +
           timesplit(player.audio.prop('currentTime')) +
@@ -96,64 +53,64 @@
         )
       }
       //}}}
-      //{{{ seek_update
-      var seek_update = function() {
+      //{{{ update_slider
+      var update_slider = function() {
         var current = player.audio.prop('currentTime')
         var duration = player.audio.prop('duration')
         player.slider.attr({ max: duration })
         player.slider.val(current)
-        slider_bg_update()
+        update_slider_bg()
       }
       //}}}
-      //{{{ slider_bg_update
-      var slider_bg_update = function() {
+      //{{{ update_slider_bg
+      var update_slider_bg = function() {
         var arr = []
         var a = player.audio.get(0)
         // fill with '1' for what's buffered
         for (i = 0; i < a.buffered.length; i++) {
-          var bufstart = (a.buffered.start(i)/a.duration)*100
-          var bufend = (a.buffered.end(i)/a.duration)*100
+          var bufstart = (a.buffered.start(i)/a.duration)*1000
+          var bufend = (a.buffered.end(i)/a.duration)*1000
           for (j = bufstart; j < bufend; j++) { arr[j] = 1 }
         }
         // fill with '2' for what's played
-        for (i = 0; i < (a.currentTime/a.duration)*100; i++) { arr[i] = 2 }
+        for (i = 0; i < (a.currentTime/a.duration)*1000; i++) { arr[i] = 2 }
         // fill with '4' for cue markers
-        var cues = player.settings.cues
+        var cues = player.source.cues
         for (i = 0; i < cues.length; i++) {
-          if (cues[i] > 0) {
-            var marker = parseInt((cues[i]/a.duration)*100)
+          if (cues[i] > 0 && cues[i] < a.duration - 10) {
+            var marker = parseInt((cues[i]/a.duration)*1000)
             arr[marker] = 4
+            arr[marker-1] = 4
           }
         }
         // stringify arr
         var bg = ''
         var cols = player.settings.bar_colors
-        for (i = 0; i < 100; i++) {
+        for (i = 0; i < 1000; i++) {
           switch(arr[i]) {
             case 1: bg += cols.buffered; break;
             case 2: bg += cols.played; break;
             case 4: bg += cols.cue; break;
             default: bg += cols.normal;
           }
-          if (i<99) { bg +=',' }
+          if (i<999) { bg +=',' }
         }
 
         player.slider.css('background', '-webkit-linear-gradient(left, ' + bg + ')');
         player.slider.css('background','-o-linear-gradient(left,  ' + bg + ')');
         player.slider.css('background','-moz-linear-gradient(left,  ' + bg + ')');
-        player.slider.css('background','-ms-linear-gradient(left,  ' + bg + ')');
         player.slider.css('background','linear-gradient(left,  ' + bg + ')');
         player.slider.css('background-color', '#fff');
       }
       //}}}
       //{{{ update
       var update = function() {
-        seek_update()
-        time_update()
+        update_slider()
+        update_time()
       }
       //}}}
       //{{{ slider_seek
-      var slider_seek = function() {
+      var slider_seek = function(e) {
         var target = player.slider.val()
         player.audio.prop('currentTime', target)
       }
@@ -164,20 +121,33 @@
           event.preventDefault()
           var a = player.audio.get(0)
           switch(event.keyCode) {
-            case 27: player.kbd_off(); break            // escape
-            case 46: player.kill(); break               // delete
-            case 32: player.toggle(); break             // space
-            case 38: player.seek(15); break             // down
-            case 40: player.seek(-15); break            // up
-            case 33: player.seek(300); break            // page up
-            case 34: player.seek(-300); break           // page down
-            case 36: a.currentTime = 0; break           // home
-            case 35: a.currentTime = a.duration; break  // end
-            case 219: player.cue_prev(); break          // [
-            case 221: player.cue_next(); break          // ]
-            case 37:                            // left
+            // escape
+            case 27: player.kbd_off(); break
+            // delete
+            case 46: player.kill(); break
+            // space
+            case 32: player.toggle(); break
+            // down
+            case 38: player.seek(15); break
+            // up
+            case 40: player.seek(-15); break
+            // page up
+            case 33: (event.ctrlKey) || player.seek(300); break
+            // page down
+            case 34: (event.ctrlKey) || player.seek(-300); break
+            // home
+            case 36: a.currentTime = 0; break
+            // end
+            case 35: a.currentTime = a.duration; break
+            // [
+            case 219: player.prev(); break
+            // ]
+            case 221: player.next(); break
+            // left
+            case 37:
               if (event.ctrlKey) { player.seek(-1) } else { player.seek(-5) }; break;
-            case 39:                            // right
+            // right
+            case 39:
               if (event.ctrlKey) { player.seek(1) } else { player.seek(5) }; break;
           }
           return false
@@ -189,19 +159,19 @@
       player.kbd_on = function() {
         player.slider.focus()
         player.keyboard_control = true
-        player.controls_div.children().addClass('btn-success')
+        player.target.css({'background': '#B7FF6F'})
         $.each(player.controls, function(k,v) {
-          var title = v.data('title')
-          var title_help = player.settings.kbd_help[k]
-          v.attr('title', title + title_help)
+          var title = player.settings.controls[k].title
+          var title_help = player.settings.controls[k].keys
+          v.attr('title', title + '\n\n' + title_help)
         })
       }
       player.kbd_off = function() {
         if (document.activeElement !== this) {
           player.keyboard_control = false
-          player.controls_div.children().removeClass('btn-success')
+          player.target.css({'background': 'none'})
           $.each(player.controls, function(k,v) {
-            v.attr('title', v.data('title'))
+            v.attr('title', player.settings.controls[k].title)
           })
         }
       }
@@ -217,28 +187,40 @@
         if (paused) { player.play() } else {  player.pause() }
       }
       //}}}
-      //{{{ cue_next|prev
-      player.cue_next = function() {
+      //{{{ next|prev
+      player.next = function() {
+        // try jump to next cue
         var current = player.audio.prop('currentTime')
-        var cues = player.settings.cues
-        for (i = 0; i < cues.length; i++) {
-          var marker = cues[i]
+        for (i = 0; i < player.source.cues.length; i++) {
+          var marker = player.source.cues[i]
           if (marker > current ) {
             player.audio.prop('currentTime', marker)
             player.slider.val(marker)
-            break
+            return
           }
         }
+        // try jump to next track
+        var idx = player.settings.sources.indexOf(player.source)
+        var next = player.settings.sources[idx + 1]
+        if (next) { player.load(next); player.play(); return true }
       }
-      player.cue_prev = function() {
+      player.prev = function() {
         var current = player.audio.prop('currentTime')
-        var cues = player.settings.cues
-        for (i = cues.length; i >= 0; i--) {
-          var marker = cues[i]
-          if (marker < current - 2 ) {
+        for (i = player.source.cues.length; i >= 0; i--) {
+          var marker = player.source.cues[i]
+          if (marker < current - 3 ) {
             player.audio.prop('currentTime', marker)
-            break
+            return
           }
+        }
+        if (player.audio.prop('currentTime') > 5) {
+          // jump to beginning of track if past 5s
+          player.audio.prop('currentTime', 0)
+        } else {
+          // otherwise try to jump to previous track
+          var idx = player.settings.sources.indexOf(player.source)
+          var prev = player.settings.sources[idx - 1]
+          if (prev) { player.load(prev); player.play() }
         }
       }
       //}}}
@@ -246,7 +228,7 @@
       player.seek = function(t) {
         var current = player.audio.prop('currentTime')
         player.audio.prop('currentTime', current + t)
-        seek_update()
+        update_slider()
       }
       //}}}
       //{{{ kill
@@ -257,6 +239,27 @@
         player.kbd_off()
       }
       //}}}
+      //{{{ load
+      player.load = function(src) {
+        // set track title
+        if (player.track) {
+          var cur = player.settings.sources.indexOf(src) + 1
+          var total = player.settings.sources.length
+          var track = cur + ' / ' + total + ' ' + src.ident
+          player.track.html(track)
+        }
+        // reset
+        player.pause()
+        player.audio.prop("currentTime", 0)
+        // add source
+        player.audio.attr('src', src.urls[0])
+        // load waveform
+        player.waveform.css('background-image', 'url("'+src.waveform+'")')
+        // save src
+        player.source = src
+      }
+
+      //}}}
       //{{{ init
       player.init = function() {
 
@@ -264,55 +267,73 @@
         player.settings = $.extend({}, defaults, options)
         player.keyboard_control = false
 
-        // audio
-        player.audio = $('<audio autoplay />')
-        $.each(player.settings.sources, function(k,v) {
-          player.audio.append('<source src="'+v+'">')
-        })
+        // audio et al
+        player.target = $(player._target)
+        player.div = $(player.settings.html)
+        player.audio = $('<audio/>')
+        player.div.append(player.audio)
+        player.target.append(player.div)
 
         // controls
         player.controls = {}
-        player.controls.toggle = button(player.toggle, 'play', 'Play/Pause')
-        if (player.settings.cues.length > 0) {
-          player.controls.cue_next = button(player.cue_next, 'step-forward', 'Next cue')
-          player.controls.cue_prev = button(player.cue_prev, 'step-backward', 'Previous cue')
-        }
-        player.controls.kill = button(player.kill, 'stop', 'Stop')
-        player.controls.kbd = button(player.kbd_toggle, 'keyboard-o', 'Toggle keyboard controls')
-        player.controls.seekbar = seekbar()
-
-        // controls div
-        player.controls_div = $('<div class="player-controls btn-group" />')
-        $.each(player.settings.controls, function(k,v) {
-          player.controls_div.append(player.controls[v])
+        $.each(player.settings.controls, function(ctl,v) {
+          player.controls[ctl] = player.target.find('.'+ctl)
+          player.controls[ctl].click(player[ctl])
+          player.controls[ctl].attr({ title: v.title })
         })
-        player.controls_div.children().keydown(kbd_parse)
-        player.controls_div.find('*').blur(player.kbd_off)
+        // remove next/prev if only one file and no cues
+        if (player.settings.sources.length == 1 && player.settings.sources[0].cues.length == 0) {
+          player.controls.prev.remove()
+          player.controls.next.remove()
+        }
 
+        // slider
+        player.slider = player.target.find('.slider')
+        player.slider.attr({ min: 0, value: 0, step: 1 })
+        player.slider.change(slider_seek)
 
-        // assemble and insert main div
-        player.div = $('<div class="player" />')
-        player.div.append(player.audio)
-        player.div.append(player.controls_div)
-        $(element).append(player.div)
+        // waveform
+        player.waveform = player.target.find('.waveform')
+
+        // time
+        player.time = player.target.find('.time')
+
+        // title
+        player.title = player.target.find('.title')
+        if (player.settings.url) {
+          var title_html = '<a href="'+player.settings.url+'">'+player.settings.title+'</a>'
+        } else {
+          var title_html = player.settings.title
+        }
+        player.title.html(title_html)
+
+        // track
+        if (player.settings.sources.length > 1) {
+          player.track = player.target.find('.track')
+        }
+
+        // load audio etc
+        player.load(player.settings.sources[0])
+
+        // event bindings
+        player.target.find('*').keydown(kbd_parse)
+        player.target.find('*').blur(player.kbd_off)
+        player.audio.on('loadedmetadata', update);
+        player.audio.on('loadeddata', update);
+        player.audio.on('progress', update);
+        player.audio.on('canplay', update);
+        player.audio.on('canplaythrough', update);
+        player.audio.on('timeupdate', update);
+        player.audio.on('ended', function() { if (!player.next()) player.pause() })
+        player.audio.on('play',  function() { player.controls.toggle.html('<i class="fa fa-pause"></i>') })
+        player.audio.on('pause',  function() { player.controls.toggle.html('<i class="fa fa-play"></i>') })
+
       }
       //}}}
       //}}}
-      //{{{ initialization + event bindings
       player.init()
-      player.audio.on('loadedmetadata', update);
-      player.audio.on('loadeddata', update);
-      player.audio.on('progress', update);
-      player.audio.on('canplay', update);
-      player.audio.on('canplaythrough', update);
-      player.audio.on('timeupdate', update);
-      player.audio.on('ended', player.pause);
-      player.audio.on('play',  function() { player.controls.toggle.html('<i class="fa fa-pause"></i>') })
-      player.audio.on('pause',  function() { player.controls.toggle.html('<i class="fa fa-play"></i>') })
-
   //}}}
   }
-  //}}}
   //{{{ jquery function add
   $.fn.audioPlayer = function(options) {
     return this.each(function() {
