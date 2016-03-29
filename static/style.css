@@ -2,7 +2,7 @@
 .table > tbody > tr > td { vertical-align: middle; }
 
 /* tweaks */
-.prewrap { white-space: pre-wrap; }
+.prewrap { white-space: pre-line; }
 .popover { max-width: 45%; }
 .nowrap { white-space: nowrap; }
 
