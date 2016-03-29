@@ -254,7 +254,12 @@
         // add source
         player.audio.attr('src', src.urls[0])
         // load waveform
-        player.waveform.css('background-image', 'url("'+src.waveform+'")')
+        if (src.waveform != 'None') {
+          player.waveform.show()
+          player.waveform.css('background-image', 'url("'+src.waveform+'")')
+        } else {
+          player.waveform.hide()
+        }
         // save src
         player.source = src
       }
