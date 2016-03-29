@@ -9,10 +9,14 @@
   </div>
 
   <div class="row">
+  % if show.image:
     <div class="col-md-4">
       <img src="{{show.image}}" style="width: 100% !important"><br><br>
     </div>
     <div class="col-md-6">
+  % else:
+    <div class="col-md-10">
+  % end
       <dl>
         <dd>
         <div id="player"></div><br>
