@@ -59,6 +59,15 @@
         <li><a href="{{show.orig_url}}" class="btn btn-default btn-sm">View on D*I website</a></li>
         <li><a href="{{show.ia_url}}" class="btn btn-default btn-sm">View on archive.org</a></li>
         <li><a href="{{show.ia_dir}}" class="btn btn-default btn-sm">Files on archive.org</a></li>
+      <br>
+      <b>Navigation</b>
+      <br><br>
+        <li><a href="/show/{{show.ident}}/prev" class="btn btn-default btn-sm">
+          <i class="fa fa-caret-left"></i> &nbsp; Previous show
+        </a></li>
+        <li><a href="/show/{{show.ident}}/next" class="btn btn-default btn-sm">
+          Next show &nbsp; <i class="fa fa-caret-right"></i>
+        </a></li>
     </ul>
     </div>
   </div>

@@ -63,6 +63,27 @@ def show_view(ident):
 def popup(ident):
     return show(ident)
 
+def show_byidx(ident, idx):
+    db.connect()
+    try:
+        show = Show.get(ident = ident)
+    except:
+        abort(404)
+    try:
+        r = Show.get(id = show.id + idx)
+    except:
+        r = show
+    db.close()
+    return r
+
+@route('/show/<ident>/next')
+def show_next(ident):
+    redirect("/show/%s" % show_byidx(ident, -1).ident)
+
+@route('/show/<ident>/prev')
+def show_prev(ident):
+    redirect("/show/%s" % show_byidx(ident, 1).ident)
+
 @route('/')
 @route('/search/')
 @view('index')
