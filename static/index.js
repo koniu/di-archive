@@ -1,5 +1,16 @@
 $(document).ready(function() {
 
+  //{{{ player
+
+  function update_played() {
+    var history = history_get()
+    $('.item').each(function(i, item){
+      var ident = basename_url($(item).find('.showlink').attr('href'))
+      if (history[ident] != undefined) $(item).find('.playbtn').css({'color': '#B000FF' })
+    })
+  }
+  update_played()
+
   function player_kill() {
     // remove player div
     $('.kplayer').remove()
@@ -9,62 +20,59 @@ $(document).ready(function() {
     $('.audiobtn').show()
     $('.showlink').show()
 
+    // update played status
+    update_played()
+
     // unset background
     background = false
     bg_unset()
   }
 
   function play() {
+    // get some vars together
+    var row = $(this).closest('.item')
+    var showlink = $(row.find('.showlink'))
+    var ident = basename_url(showlink.attr('href'))
+
     // kill any other players
     player_kill()
 
     // get sources
-    var sourcesh = {}
-    $(this).closest('.item').find('.audiolink').each(function(l,e) {
-      var ident = e.href.split('/').reverse()[0].split('.')[0]
-      if (sourcesh[ident]) {
-        sourcesh[ident].urls.push(e.href)
-      } else {
-        var src = {}
-        src.waveform = e.getAttribute('data-waveform')
-        src.urls = [ e.href ]
-        var cue_string = e.getAttribute('data-cues')
-        if (cue_string) { src.cues = ('0,'+cue_string).split(',').map(function(c) { return parseInt(c) }) } else { src.cues = [] } //FIXME: pretty hacky getting cues undefined otherwise
-      sourcesh[ident] = src
-      }
-    })
-    // turn dict into array
-    var sources = []
-    $.each(sourcesh, function(id,s) {
-      s.ident = id
-      sources.push(s)
-    })
-
-    // hide our button
-    $(this).hide()
+    var links = $(this).closest('.item').find('.audiolink')
+    sources = get_sources(links)
 
     // initialize player
-    var row = $(this).closest('.item')
     var target = $(row.children('.main').get())
-    var showlink = $(row.find('.showlink'))
-    player = target.audioPlayer({
+    var player = player_init(target, ident, {
       sources: sources,
       title: showlink.html(),
       url: showlink.attr('href')
     })
+
+    // hide button and showlink
+    $(this).hide()
     showlink.hide()
-    // show popover for the in-plauer title
+
+    // show popover for the in-player title
     $('.kplayer .title a').hover(pop)
+
     // clean up on kill
-    player.on('killed', player_kill)
+    target.on('killed', player_kill)
 
     // set background global to the show's thumbnail
-    background = $(this).closest('.item').find('img').attr('src')
+    background = row.find('img').attr('src')
     bg_set(background)
 
-    // trigger play
-    $('audio').trigger('play')
+    // start playback
+    player.play()
   }
+
+  // show play-buttons and bind click
+  $('.playbtn').show()
+  $('.playbtn').click(play)
+
+  //}}}
+  //{{{ background
 
   function bg_set(image) {
     // set image src
@@ -83,10 +91,6 @@ $(document).ready(function() {
     })
   }
 
-  // show play-buttons and bind click
-  $('.playbtn').show()
-  $('.playbtn').click(play)
-
   // no bg set to begin with
   background = false
 
@@ -97,12 +101,14 @@ $(document).ready(function() {
     function() { if (!background) { bg_unset() } }
   )
 
-  // popovers with show blurb when hovering over show
+  //}}}
+  //{{{ popovers
+
   function pop() {
     var e = $(this);
     if (e.data('title') == undefined) {
       e.data('title', '');
-      var ident = $(e).attr('href').split('/').reverse()[0]
+      var ident = basename_url($(e).attr('href'))
       var url = '/showinfo/'+ident
       $.get(url, function(r) {
         var title = $(r).find('#title').text
@@ -113,4 +119,5 @@ $(document).ready(function() {
   }
   $('body').on('mouseover', '.showlink', pop)
 
+  //}}}
 })
