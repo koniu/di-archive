@@ -110,16 +110,12 @@
       }
       //}}}
       //{{{ slider_seek
-      var slider_seek = function(e) {
-        var target = player.slider.val()
-        player.audio.prop('currentTime', target)
-      }
+      var slider_seek = function(e) { player.seek(player.slider.val(), false) }
       //}}}
         //{{{ kbd_parse
         var kbd_parse = function(event) {
           if (!player.keyboard_control) return true;
           event.preventDefault()
-          var a = player.audio.get(0)
           switch(event.keyCode) {
             // escape
             case 27: player.kbd_off(); break
@@ -136,9 +132,9 @@
             // page down
             case 34: (event.ctrlKey) || player.seek(-300); break
             // home
-            case 36: a.currentTime = 0; break
+            case 36: player.seek(0, false); break
             // end
-            case 35: a.currentTime = a.duration; break
+            case 35: player.seek(player.audio.get(0).duration, false); break
             // [
             case 219: player.prev(); break
             // ]
@@ -225,17 +221,18 @@
       }
       //}}}
       //{{{ seek
-      player.seek = function(t) {
+      player.seek = function(t, relative = true) {
         var current = player.audio.prop('currentTime')
-        player.audio.prop('currentTime', current + t)
-        update_slider()
+        var base = (relative ? current : 0)
+        player.audio.prop('currentTime', base + t)
+        update()
       }
       //}}}
       //{{{ kill
       player.kill = function() {
         $(element).trigger('killed')
         player.pause()
-        player.audio.prop("currentTime", 0)
+        player.seek(0, false)
         player.kbd_off()
       }
       //}}}
@@ -295,7 +292,7 @@
         // slider
         player.slider = player.target.find('.slider')
         player.slider.attr({ min: 0, value: 0, step: 1 })
-        player.slider.change(slider_seek)
+        player.slider.on('input', slider_seek)
 
         // waveform
         player.waveform = player.target.find('.waveform')
