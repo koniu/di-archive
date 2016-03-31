@@ -248,7 +248,7 @@
         player.pause()
         player.audio.prop("currentTime", 0)
         // add source
-        player.audio.attr('src', src.urls[0])
+        player.audio.attr('src', src.urls[1]) //FIXME: hardcoded .mp3 over .ogg == more bandwidth
         // load waveform
         if (src.waveform != 'None') {
           player.waveform.show()
