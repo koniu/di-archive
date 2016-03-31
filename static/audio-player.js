@@ -100,7 +100,6 @@
         player.slider.css('background','-o-linear-gradient(left,  ' + bg + ')');
         player.slider.css('background','-moz-linear-gradient(left,  ' + bg + ')');
         player.slider.css('background','linear-gradient(left,  ' + bg + ')');
-        player.slider.css('background-color', '#fff');
       }
       //}}}
       //{{{ update
@@ -155,7 +154,7 @@
       player.kbd_on = function() {
         player.slider.focus()
         player.keyboard_control = true
-        player.target.css({'background': '#B7FF6F'})
+        player.div.css({'background': '#B7FF6F'})
         $.each(player.controls, function(k,v) {
           var title = player.settings.controls[k].title
           var title_help = player.settings.controls[k].keys
@@ -165,7 +164,7 @@
       player.kbd_off = function() {
         if (document.activeElement !== this) {
           player.keyboard_control = false
-          player.target.css({'background': 'none'})
+          player.div.css({'background': 'none'})
           $.each(player.controls, function(k,v) {
             v.attr('title', player.settings.controls[k].title)
           })
