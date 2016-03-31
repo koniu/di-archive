@@ -241,7 +241,7 @@
         if (player.track) {
           var cur = player.settings.sources.indexOf(src) + 1
           var total = player.settings.sources.length
-          var track = cur + ' / ' + total + ' ' + src.ident
+          var track = '<span>' + cur + ' / ' + total + ' ' + src.ident + '</span>'
           player.track.html(track)
         }
         // reset
