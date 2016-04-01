@@ -20,6 +20,11 @@ $(document).ready(function() {
     $('.audiobtn').show()
     $('.showlink').show()
 
+    // restore borders and undim rows
+    $('.item').css({'border-color': '#ddd'})
+    $('.item').stop().animate({'opacity': '1'}, 500)
+    $('.item').off('mouseenter mouseleave')
+
     // update played status
     update_played()
 
@@ -52,6 +57,15 @@ $(document).ready(function() {
     // hide button and showlink
     $(this).hide()
     showlink.hide()
+
+    // row dimming + border removal
+    row.css({'opacity': '1'})
+    $('.item').css({'border-color': 'transparent'})
+    $('.item').stop().not(row).animate({'opacity': '0.2'}, 500)
+    $('.item').not(row).hover(
+      function() { $(this).css({'opacity': '1'}) },
+      function() { $(this).css({'opacity': '0.2'}) }
+    )
 
     // show popover for the in-player title
     $('.kplayer .title a').hover(pop)

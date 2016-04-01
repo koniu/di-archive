@@ -15,7 +15,7 @@
   $.audioPlayer = function(element, options) {
       //{{{ settings
       var defaults = {
-        html: '<div class="kplayer"><div class="seekbar"><div class="waveform"></div><input class="slider" type="range"></input><div class="time">...</div><div class="title"></div><div class="track"></div></div><div class="buttons"><button class="kbd_toggle"><i class="fa fa-keyboard-o"></i></button><button class="prev"><i class="fa fa-step-backward"></i></button><button class="next"><i class="fa fa-step-forward"></i></button><button class="toggle"><i class="fa fa-play"></i></button><button class="kill"><i class="fa fa-stop"></i></button></div></div>',
+        html: '<div class="kplayer"><div class="seekbar"><div class="buffer"></div><div class="waveform"></div><input class="slider" type="range"></input><div class="time">...</div><div class="title"></div><div class="track"></div></div><div class="buttons"><button class="kbd_toggle"><i class="fa fa-keyboard-o"></i></button><button class="prev"><i class="fa fa-step-backward"></i></button><button class="next"><i class="fa fa-step-forward"></i></button><button class="toggle"><i class="fa fa-play"></i></button><button class="kill"><i class="fa fa-stop"></i></button></div></div>',
         sources: [],
         controls: {
           toggle: { title: 'Play/Pause',      keys: '⌨ Space'     },
@@ -32,11 +32,13 @@
           }
         },
         bar_colors: {
-          buffered: '#ebebeb',
-          played:   '#c8c8c8',
-          cue:      '#aaa',
-          normal:   '#ffffff'
-        }
+          unbuffered: '#ddd',
+          buffered: '#bbb',
+          played:   '#aaa',
+          cue:      '#888',
+          normal:   'transparent',
+        },
+        kbd_tint:      'rgba(0,250,0,0.2)'
       }
       var player = this // FIXME: make local again
       player._target = element
@@ -59,19 +61,30 @@
         var duration = player.audio.prop('duration')
         player.slider.attr({ max: duration })
         player.slider.val(current)
-        update_slider_bg()
       }
       //}}}
       //{{{ update_slider_bg
+      var update_buffer_bg = function() {
+        var cols = player.settings.bar_colors
+        var a = player.audio.get(0)
+        var buf = a.buffered
+        var bg = cols.unbuffered + ' 0%'
+        for (i = 0; i < a.buffered.length; i++) {
+          var bufend = (buf.end(i) < a.duration) ? (buf.end(i) / a.duration)*100 : 100
+          var bufstart = ((buf.start(i) / a.duration) * 100);
+          bg += ', ' + cols.unbuffered + ' ' + bufstart + '%'
+          bg += ', ' + cols.buffered + ' ' + bufstart + '%'
+          bg += ', ' + cols.buffered + ' ' + bufend + '%'
+          bg += ', ' + cols.unbuffered + ' ' + bufend + '%'
+        }
+        player.buffer.css('background-image', '-webkit-linear-gradient(to right, ' + bg + ')');
+        player.buffer.css('background-image', '-moz-linear-gradient(to right,  ' + bg + ')');
+        player.buffer.css('background-image', 'linear-gradient(to right,  ' + bg + ')');
+
+      }
       var update_slider_bg = function() {
         var arr = []
         var a = player.audio.get(0)
-        // fill with '1' for what's buffered
-        for (i = 0; i < a.buffered.length; i++) {
-          var bufstart = (a.buffered.start(i)/a.duration)*1000
-          var bufend = (a.buffered.end(i)/a.duration)*1000
-          for (j = bufstart; j < bufend; j++) { arr[j] = 1 }
-        }
         // fill with '2' for what's played
         for (i = 0; i < (a.currentTime/a.duration)*1000; i++) { arr[i] = 2 }
         // fill with '4' for cue markers
@@ -88,7 +101,6 @@
         var cols = player.settings.bar_colors
         for (i = 0; i < 1000; i++) {
           switch(arr[i]) {
-            case 1: bg += cols.buffered; break;
             case 2: bg += cols.played; break;
             case 4: bg += cols.cue; break;
             default: bg += cols.normal;
@@ -106,6 +118,8 @@
       var update = function() {
         update_slider()
         update_time()
+        update_slider_bg()
+        update_buffer_bg()
       }
       //}}}
       //{{{ slider_seek
@@ -154,7 +168,8 @@
       player.kbd_on = function() {
         player.slider.focus()
         player.keyboard_control = true
-        player.div.css({'background': '#B7FF6F'})
+        player.time.css({'background': player.settings.kbd_tint })
+        player.buttons.children().css({'background': player.settings.kbd_tint })
         $.each(player.controls, function(k,v) {
           var title = player.settings.controls[k].title
           var title_help = player.settings.controls[k].keys
@@ -164,7 +179,8 @@
       player.kbd_off = function() {
         if (document.activeElement !== this) {
           player.keyboard_control = false
-          player.div.css({'background': 'none'})
+          player.time.css({'background': 'none'})
+          player.buttons.children().css({'background': 'none'})
           $.each(player.controls, function(k,v) {
             v.attr('title', player.settings.controls[k].title)
           })
@@ -189,7 +205,7 @@
         for (i = 0; i < player.source.cues.length; i++) {
           var marker = player.source.cues[i]
           if (marker > current ) {
-            player.audio.prop('currentTime', marker)
+            player.seek(marker, false)
             player.slider.val(marker)
             return
           }
@@ -204,13 +220,13 @@
         for (i = player.source.cues.length; i >= 0; i--) {
           var marker = player.source.cues[i]
           if (marker < current - 3 ) {
-            player.audio.prop('currentTime', marker)
+            player.seek(marker, false)
             return
           }
         }
         if (player.audio.prop('currentTime') > 5) {
           // jump to beginning of track if past 5s
-          player.audio.prop('currentTime', 0)
+          player.seek(0, false)
         } else {
           // otherwise try to jump to previous track
           var idx = player.settings.sources.indexOf(player.source)
@@ -293,11 +309,11 @@
         player.slider.attr({ min: 0, value: 0, step: 1 })
         player.slider.on('input', slider_seek)
 
-        // waveform
+        // waveform + buffer + time
         player.waveform = player.target.find('.waveform')
-
-        // time
+        player.buffer = player.target.find('.buffer')
         player.time = player.target.find('.time')
+        player.buttons = player.target.find('.buttons')
 
         // title
         player.title = player.target.find('.title')
