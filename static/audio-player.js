@@ -248,6 +248,7 @@
         $(element).trigger('killed')
         player.pause()
         player.seek(0, false)
+        player.audio.prop('src','') //FIXME: workaround for firefox keeping on streamking (throws warning)
         player.kbd_off()
       }
       //}}}
