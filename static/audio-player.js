@@ -125,43 +125,43 @@
       //{{{ slider_seek
       var slider_seek = function(e) { player.seek(player.slider.val(), false) }
       //}}}
-        //{{{ kbd_parse
-        var kbd_parse = function(event) {
-          if (!player.keyboard_control) return true;
-          event.preventDefault()
-          switch(event.keyCode) {
-            // escape
-            case 27: player.kbd_off(); break
-            // delete
-            case 46: player.kill(); break
-            // space
-            case 32: player.toggle(); break
-            // down
-            case 38: player.seek(15); break
-            // up
-            case 40: player.seek(-15); break
-            // page up
-            case 33: (event.ctrlKey) || player.seek(300); break
-            // page down
-            case 34: (event.ctrlKey) || player.seek(-300); break
-            // home
-            case 36: player.seek(0, false); break
-            // end
-            case 35: player.seek(player.audio.get(0).duration, false); break
-            // [
-            case 219: player.prev(); break
-            // ]
-            case 221: player.next(); break
-            // left
-            case 37:
-              if (event.ctrlKey) { player.seek(-1) } else { player.seek(-5) }; break;
-            // right
-            case 39:
-              if (event.ctrlKey) { player.seek(1) } else { player.seek(5) }; break;
-          }
-          return false
+      //{{{ kbd_parse
+      var kbd_parse = function(event) {
+        if (!player.keyboard_control) return true;
+        event.preventDefault()
+        switch(event.keyCode) {
+          // escape
+          case 27: player.kbd_off(); break
+          // delete
+          case 46: player.kill(); break
+          // space
+          case 32: player.toggle(); break
+          // down
+          case 38: player.seek(15); break
+          // up
+          case 40: player.seek(-15); break
+          // page up
+          case 33: (event.ctrlKey) || player.seek(300); break
+          // page down
+          case 34: (event.ctrlKey) || player.seek(-300); break
+          // home
+          case 36: player.seek(0, false); break
+          // end
+          case 35: player.seek(player.audio.get(0).duration, false); break
+          // [
+          case 219: player.prev(); break
+          // ]
+          case 221: player.next(); break
+          // left
+          case 37:
+            if (event.ctrlKey) { player.seek(-1) } else { player.seek(-5) }; break;
+          // right
+          case 39:
+            if (event.ctrlKey) { player.seek(1) } else { player.seek(5) }; break;
         }
-        //}}}
+        return false
+      }
+      //}}}
       //}}}
       //{{{ public methods
       //{{{ kbd_on|off|toggle
