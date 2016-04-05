@@ -89,6 +89,8 @@ div.tags {
 }
 #navbar .input-group button:hover {  color: black; }
 
+.kplayer { border: 1px solid #e4e4e4 }
+
 #navbar h3 {
   font-size: 16pt;
   font-family: courier,monospace;
@@ -139,4 +141,9 @@ div.tags {
 
 @media screen and (max-width: 992px) {
   .item button { width: 30px }
+}
+
+.grayscale {
+  filter: grayscale(1);
+  -webkit-filter: grayscale(1)
 }

@@ -22,8 +22,9 @@ $(document).ready(function() {
 
     // restore borders and undim rows
     $('.item').css({'border-color': '#ddd'})
-    $('.item').stop().animate({'opacity': '1'}, 500)
     $('.item').off('mouseenter mouseleave')
+    $('.item').stop().animate({'opacity': '1'}, 500)
+    $('.item').children().removeClass('grayscale')
 
     // update played status
     update_played()
@@ -61,10 +62,17 @@ $(document).ready(function() {
     // row dimming + border removal
     row.css({'opacity': '1'})
     $('.item').css({'border-color': 'transparent'})
-    $('.item').stop().not(row).animate({'opacity': '0.2'}, 500)
+    $('.item').stop().not(row).animate({'opacity': '0.3'}, 2000,
+        function() { $('.item').not(row).children().addClass('grayscale') })
     $('.item').not(row).hover(
-      function() { $(this).css({'opacity': '1'}) },
-      function() { $(this).css({'opacity': '0.2'}) }
+      function() {
+        $(this).css({'opacity': '1'})
+        $(this).children().removeClass('grayscale')
+      },
+      function() {
+        $(this).css({'opacity': '0.3'})
+        $(this).children().addClass('grayscale')
+      }
     )
 
     // show popover for the in-player title
