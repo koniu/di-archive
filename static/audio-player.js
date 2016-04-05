@@ -204,11 +204,7 @@
         var current = player.audio.prop('currentTime')
         for (i = 0; i < player.source.cues.length; i++) {
           var marker = player.source.cues[i]
-          if (marker > current ) {
-            player.seek(marker, false)
-            player.slider.val(marker)
-            return
-          }
+          if (marker > current ) { player.seek(marker, false); return }
         }
         // try jump to next track
         var idx = player.settings.sources.indexOf(player.source)
@@ -219,10 +215,7 @@
         var current = player.audio.prop('currentTime')
         for (i = player.source.cues.length; i >= 0; i--) {
           var marker = player.source.cues[i]
-          if (marker < current - 3 ) {
-            player.seek(marker, false)
-            return
-          }
+          if (marker < current - 3 ) { player.seek(marker, false); return }
         }
         if (player.audio.prop('currentTime') > 5) {
           // jump to beginning of track if past 5s
@@ -237,10 +230,13 @@
       //}}}
       //{{{ seek
       player.seek = function(t, relative = true) {
-        var current = player.audio.prop('currentTime')
+        var current = parseInt(player.audio.prop('currentTime'))
         var base = (relative ? current : 0)
-        player.audio.prop('currentTime', base + t)
-        update()
+        var target = parseInt(base + t)
+        if (current != target) {
+          player.audio.prop('currentTime', parseInt(base + t))
+          update()
+        }
       }
       //}}}
       //{{{ kill
