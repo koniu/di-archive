@@ -145,4 +145,5 @@ def server_static(path):
 def error404(error):
     return { 'error': error, 'request': request }
 
-run(host='', port=8010, debug=True, reloader=True)
+if __name__ == "__main__":
+    run(host='', port=8010, debug=True, reloader=True)
