@@ -49,7 +49,7 @@ $(document).ready(function() {
 
     // initialize player
     var target = $(row.children('.main').get())
-    var player = player_init(target, ident, {
+    player = player_init(target, ident, {
       sources: sources,
       title: showlink.html(),
       url: showlink.attr('href')

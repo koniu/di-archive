@@ -145,4 +145,8 @@ def server_static(path):
 def error404(error):
     return { 'error': error, 'request': request }
 
-run(host='', port=2383, debug=True, reloader=True)
+
+
+
+
+run(host='0.0.0.0', server='paste', port='2383')

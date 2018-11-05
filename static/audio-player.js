@@ -10,6 +10,7 @@
     if (hours < 10) { hours = '0' + hours }
     return hours + ':' + minutes + ':' + seconds
   }
+  var time2percent = function(time, total, freq=1000) { return (time/total)*freq }
   //}}}
   //{{{ player code
   $.audioPlayer = function(element, options) {
@@ -82,21 +83,35 @@
         player.buffer.css('background-image', 'linear-gradient(to right,  ' + bg + ')');
 
       }
+      //}}}
+      //{{{ update_cue_markers
+      var update_cue_markers = function() {
+        var a = player.audio.get(0)
+        var cues = player.source.cues
+        if (player.cue_markers) player.cue_markers.remove()
+        player.cue_markers = $('<div class="cues">')
+        for (i = 0; i < cues.length; i++) {
+          if (cues[i] > 0  && cues[i] < a.duration - 10) {
+            var marker = parseInt((cues[i]/a.duration)*10000)
+            var cuebox = $('<div>')
+            console.log(i, cues[i], marker)
+            cuebox.css({
+              position: 'absolute',
+              height: '100%', width: '10px',
+              left: marker/100 + '%'
+            })
+            player.cue_markers.append(cuebox)
+          }
+        }
+        player.seekbar.append(player.cue_markers)
+      }
+      //}}}
+      //{{{ update_slider_bg
       var update_slider_bg = function() {
         var arr = []
         var a = player.audio.get(0)
         // fill with '2' for what's played
         for (i = 0; i < (a.currentTime/a.duration)*1000; i++) { arr[i] = 2 }
-        // fill with '4' for cue markers
-        var cues = player.source.cues
-        for (i = 0; i < cues.length; i++) {
-          if (cues[i] > 0 && cues[i] < a.duration - 10) {
-            var marker = parseInt((cues[i]/a.duration)*1000)
-            arr[marker] = 4
-            arr[marker-1] = 4
-          }
-        }
-        // stringify arr
         var bg = ''
         var cols = player.settings.bar_colors
         for (i = 0; i < 1000; i++) {
@@ -200,15 +215,17 @@
       //}}}
       //{{{ next|prev
       player.next = function() {
+        console.log('next')
         // try jump to next cue
         var current = player.audio.prop('currentTime')
-        for (i = 0; i < player.source.cues.length; i++) {
+        for (i = 0; i < player.source.cues.length -1 ; i++) {
           var marker = player.source.cues[i]
           if (marker > current ) { player.seek(marker, false); return }
         }
         // try jump to next track
         var idx = player.settings.sources.indexOf(player.source)
         var next = player.settings.sources[idx + 1]
+        console.log('trying next track', idx, next)
         if (next) { player.load(next); player.play(); return true }
       }
       player.prev = function() {
@@ -311,6 +328,7 @@
         player.buffer = player.target.find('.buffer')
         player.time = player.target.find('.time')
         player.buttons = player.target.find('.buttons')
+        player.seekbar = player.target.find('.seekbar')
 
         // title
         player.title = player.target.find('.title')
@@ -333,6 +351,7 @@
         player.target.find('*').keydown(kbd_parse)
         player.target.find('*').blur(player.kbd_off)
         player.audio.on('loadedmetadata', update);
+        player.audio.on('loadedmetadata', update_cue_markers);
         player.audio.on('loadeddata', update);
         player.audio.on('progress', update);
         player.audio.on('canplay', update);

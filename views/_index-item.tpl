@@ -10,7 +10,7 @@
               <li>
                 <a class="audiolink" href="{{dl.url}}"
                     data-waveform="{{dl.waveform}}"
-                    data-cues="{{show.chapters}}">
+                    data-cues="{{dl.cues}}">
                   <span>{{dl.format}}</span>
                   <small class="text-muted">{{dl.size/(1024*1024)}}MB</small><br/>
                   <small class="text-info">{{dl.name}}</small>

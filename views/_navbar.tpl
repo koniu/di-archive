@@ -9,9 +9,8 @@
       <div class="media-body">
         <h3><a href="/">Dissident Island Radio Archive</a></h3>
         <div class="small" id="nav-links">
-          <a href="/tags">[tag browser]</a>
-          <a href="http://dissidentisland.org" target="_blank">[d*i website]</a>
-          <a href="http://github.com/koniu/di-archive" target="_blank">[source]</a>
+          <a href="/tags">[tag&nbsp;browser]</a>
+          <a href="http://dissidentisland.org" target="_blank">[d*i&nbsp;website]</a>
         </div>
       </div>
     </div>
@@ -22,7 +21,8 @@
       <div class="input-group">
         <input name="s" type="text" value="{{query}}" class="form-control" placeholder="Search..." />
         <span class="input-group-btn">
-          <button class="btn" title="Search" type="Submit">&nbsp;<i class="fa fa-search"></i>&nbsp;</button>
+          <button class="btn" title="Search" type="Submit">&nbsp;<i class="fa
+          fa-search" title="Search"></i>&nbsp;</button>
         </span>
       </div>
     </form>

@@ -23,7 +23,6 @@ class Show(BaseModel):
     ident = CharField(null = True) #FIXME: we don't want null really
     orig_url = CharField()
     tags = ManyToManyField(Tag, related_name='shows')
-    chapters = CharField(null = True)
 
 ShowTag = Show.tags.get_through_model()
 
@@ -34,6 +33,7 @@ class Audio(BaseModel):
     name = CharField()
     waveform = CharField(null=True)
     show = ForeignKeyField(Show, related_name='audio')
+    cues = CharField(null = True)
 
     class Meta:
         order_by = ['format', 'name']

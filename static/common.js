@@ -52,7 +52,10 @@ function get_sources(links) {
   var sources = []
   $.each(sourcesh, function(id,s) {
     s.ident = id
-    sources.push(s)
+    // reinstert excluding 'djset' and 'show'
+    if (!(~id.indexOf('-djs') || ~id.indexOf('-show'))) {
+      sources.push(s)
+    }
   })
   return sources
 }

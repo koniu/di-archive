@@ -33,8 +33,11 @@ class FeedItem(object):
         self.title = xml_item.find('title').text
         self.url = xml_item.find('guid').text
         self.blurb = xml_item.find('description').text
-        self.ident = xml_item.find('enclosure').attrib['url'].split('/')[-2]
         self.date = xml_item.find('pubDate').text
+        url = xml_item.find('enclosure').attrib['url']
+        if "is.gd" in url:
+            url = requests.head(url, allow_redirects=True).url
+        self.ident = url.split('/')[-2]
 #}}}
 ##{{{ CachedObject
 class CachedObject(object):
@@ -73,7 +76,6 @@ class Show(CachedObject):
         self.ia_url = self.get_ia_url()
         self.ia_dir = self.get_ia_dir()
         self.tags = self.get_tags()
-        self.chapters = self.get_chapters()
         self.waveforms = self.get_waveforms()
 
     def _cache_cb(self, ident):
@@ -115,7 +117,7 @@ class Show(CachedObject):
 
     def get_title(self):
         if self.ia.exists and self.ia.identifier != 'None':
-            return self.ia.metadata['title']
+            return self.ia.metadata.get('title')
         else:
             return self.rss_item.title
 
@@ -216,12 +218,16 @@ if __name__ == "__main__":
                     ia_dir = s.ia_dir,
                     ident = s.ident,
                     orig_url = s.orig_url,
-                    chapters = s.chapters
                 )
 
                 # create Audio records
                 for a in s.audio:
                     waveform = None
+                    #if s.audio.index(a) == 0:
+                    #FIXME: figure out how to make cues only apply to chat audio
+                    cues = s.get_chapters()
+                    #else:
+                    #    cues = ''
                     for w in s.waveforms:
                         if os.path.splitext(w.original)[0] == os.path.splitext(a.name)[0]:
                             waveform = w.url
@@ -232,7 +238,8 @@ if __name__ == "__main__":
                         format = a.format,
                         name = a.name,
                         size = a.size,
-                        waveform = waveform
+                        waveform = waveform,
+                        cues = cues
                     )
 
                 # create Tag records
